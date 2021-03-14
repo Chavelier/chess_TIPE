@@ -50,9 +50,7 @@ def affiche_position():
                 imglist += [""]
 affiche_position()
 
-
-
-def button_push(evt=""): #se déclanche lors de l'appui sur bouton
+def execute_cmd():
     cmd= cmd_bar.get()
 
     if cmd == "new":
@@ -66,6 +64,13 @@ def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     affiche_position()
     cmd_bar.delete(0,"end")
 
+
+
+# gestion des touches ----------------------------------------------------------
+
+def button_push(evt=""): #se déclanche lors de l'appui sur bouton
+    execute_cmd()
+
 def on_click(evt):
     casex = (evt.x-32)//64
     casey = (evt.y-32)//64
@@ -75,12 +80,13 @@ def on_click(evt):
         c = B.coords[casex+8*casey]
         cmd_bar.insert("end",c)
         if len(cmd_bar.get()) >= 4:
-            button_push()
+            execute_cmd()
 def on_click2(evt):
     if cmd_bar.get() == "":
         cmd_bar.insert("end","undo")
-    button_push()
+    execute_cmd()
 
+# gestion des touches ----------------------------------------------------------
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
@@ -88,6 +94,7 @@ tk.bind_all('<3>',on_click2)
 box = Frame(tk)
 cmd_bar = Entry(box)
 btn = Button(box, text='ENTRER', command=button_push)
+
 
 
 #Pack()
