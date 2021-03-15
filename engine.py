@@ -21,7 +21,6 @@ class Engine:
     ####################################################################
 
     def usermove(self,b,c):
-
         """Move a piece for the side to move, asked in command line.
         The command 'c' in argument is like 'e2e4' or 'b7b8q'.
         Argument 'b' is the chessboard.
@@ -64,8 +63,8 @@ class Engine:
             print("\n"+c+' : incorrect move or let king in check'+"\n")
             return
 
-        # Display the chess board
-        b.render()
+        # # Display the chess board
+        # b.render()
 
         # Check if game is over
         self.print_result(b)
@@ -232,7 +231,6 @@ class Engine:
     ####################################################################
 
     def print_result(self,b):
-
         "Check if the game is over and print the result"
 
         # Is there at least one legal move left ?
@@ -445,7 +443,6 @@ class Engine:
     ####################################################################
 
     def undomove(self,b):
-
         "The user requested a 'undomove' in command line"
 
         b.undomove()

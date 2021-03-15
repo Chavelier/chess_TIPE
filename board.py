@@ -9,7 +9,7 @@ from piece import *
 class Board:
     """Le plateau de jeu"""
 
-    coords = [
+    coord = [
     'a8','b8','c8','d8','e8','f8','g8','h8',
     'a7','b7','c7','d7','e7','f7','g7','h7',
     'a6','b6','c6','d6','e6','f6','g6','h6',
@@ -21,6 +21,10 @@ class Board:
     ]
 
     def __init__(self):
+        self.init()
+
+
+    def init(self):
 
         #initialisation de l'échéquier
         self.cases = [
@@ -412,6 +416,48 @@ class Board:
                 return True
         return False
 
+    ####################################################################
+
+    def caseStr2Int(self,c):
+        """'c' given in argument is a square name like 'e2'
+        "This functino returns a square number like 52"""
+
+        err=(
+        'The square name must be 2 caracters i.e. e2,e4,b1...',
+        'Incorrect square name. Please enter i.e. e2,e4,b1...'
+        )
+        letters=('a','b','c','d','e','f','g','h')
+        numbers=('1','2','3','4','5','6','7','8')
+
+        if(len(c)!=2):
+            print(err[0])
+            return -1
+
+        if(c[0] not in letters):
+            print(err[1])
+            return -1
+
+        if(c[1] not in numbers):
+            print(err[1])
+            return -1
+
+        return self.coord.index(c)
+
+    def caseInt2Str(self,i):
+        """Given in argument : an integer between 0 and 63
+        Returns a string like 'e2'"""
+
+        err=(
+        'Square number must be in 0 to 63',
+        )
+        letters=('a','b','c','d','e','f','g','h')
+        numbers=('1','2','3','4','5','6','7','8')
+
+        if(i<0 or i>63):
+            print(err[0])
+            return
+
+        return self.coord[i]
     ####################################################################
 
     @staticmethod #fonction attaché à la classe ne pouvant pas utiliser les variables self dépendant de l'objet créé

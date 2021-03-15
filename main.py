@@ -1,7 +1,7 @@
 from board import *
 from tkinter import *
+from engine import *
 import os
-import time
 
 tk = Tk()
 tk.title("Chess")
@@ -13,6 +13,7 @@ canvas = Canvas(tk, width=576, height=576,bd=0, highlightthickness=0)
 
 
 B = Board() #création échéquier
+E = Engine() #creation engine
 
 imglist = [] #liste des images à afficher (pièces)
 
@@ -54,13 +55,13 @@ def execute_cmd():
     cmd= cmd_bar.get()
 
     if cmd == "new":
-        B.__init__()
+        B.newgame(B)
     elif cmd == "quit":
         tk.quit()
     elif cmd == "undo":
-        B.undo_move()
+        E.undomove(B)
     elif len(cmd) == 4:
-        B.move_piece(cmd)
+        E.usermove(B,cmd)
     affiche_position()
     cmd_bar.delete(0,"end")
 
@@ -77,7 +78,7 @@ def on_click(evt):
     if casex>=0 and casey >=0:
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")
-        c = B.coords[casex+8*casey]
+        c = B.coord[casex+8*casey]
         cmd_bar.insert("end",c)
         if len(cmd_bar.get()) >= 4:
             execute_cmd()
