@@ -55,12 +55,14 @@ def execute_cmd():
     cmd= cmd_bar.get()
 
     if cmd == "new":
-        B.newgame(B)
+        E.newgame(B)
     elif cmd == "quit":
         tk.quit()
     elif cmd == "undo":
         E.undomove(B)
-    elif len(cmd) == 4:
+    # elif cmd == "go":
+    #     E
+    else:
         E.usermove(B,cmd)
     affiche_position()
     cmd_bar.delete(0,"end")

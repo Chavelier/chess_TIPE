@@ -117,7 +117,7 @@ class Board:
                 mList+=piece.pos2_roi(pos1,self.oppColor(color),self,dontCallIsAttacked)
                 continue
 
-            elif(piece.nom=='DAME'): # REINE = TOUR + FOU
+            elif(piece.nom=='REINE'): # REINE = TOUR + FOU
                 mList+=piece.pos2_tour(pos1,self.oppColor(color),self)
                 mList+=piece.pos2_fou(pos1,self.oppColor(color),self)
                 continue
@@ -278,7 +278,7 @@ class Board:
         # Promotion : le PION est changé en n'importe qu'elle piece
         if(promote!=''):
             if(promote=='q'):
-                self.cases[arrivee]=Piece('DAME',self.side2move)
+                self.cases[arrivee]=Piece('REINE',self.side2move)
             elif(promote=='r'):
                 self.cases[arrivee]=Piece('TOUR',self.side2move)
             elif(promote=='n'):
