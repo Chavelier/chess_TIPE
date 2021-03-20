@@ -50,26 +50,26 @@ class Board:
         self.black_can_castle_7=True
 
 
-    def move_piece(self,cmd):
-        """controle le mvt des pieces. cmd = "e2e4" par ex"""
-        start = cmd[0:2]
-        end = cmd[2:4]
-        piece_en_mvt = self.cases[Board.coords.index(start)]
-        if piece_en_mvt != Piece():
-            self.histo += [(cmd,self.cases[Board.coords.index(end)].nom,self.cases[Board.coords.index(end)].couleur)] #on ajoute la ligne à l'historique
-            self.cases[Board.coords.index(start)] = Piece() #remplace la position de départ par du vide
-            self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
-
-
-    def undo_move(self):
-        if self.histo == []:
-            return
-        start = self.histo[-1][0][2:4]
-        end = self.histo[-1][0][0:2]
-        piece_en_mvt = self.cases[Board.coords.index(start)]
-        self.cases[Board.coords.index(start)] = Piece(self.histo[-1][1],self.histo[-1][2]) #remplace la position de départ par la pièce mangée précedemment
-        self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
-        del self.histo[-1]
+    # def move_piece(self,cmd):
+    #     """controle le mvt des pieces. cmd = "e2e4" par ex"""
+    #     start = cmd[0:2]
+    #     end = cmd[2:4]
+    #     piece_en_mvt = self.cases[Board.coords.index(start)]
+    #     if piece_en_mvt != Piece():
+    #         self.histo += [(cmd,self.cases[Board.coords.index(end)].nom,self.cases[Board.coords.index(end)].couleur)] #on ajoute la ligne à l'historique
+    #         self.cases[Board.coords.index(start)] = Piece() #remplace la position de départ par du vide
+    #         self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
+    #
+    #
+    # def undo_move(self):
+    #     if self.histo == []:
+    #         return
+    #     start = self.histo[-1][0][2:4]
+    #     end = self.histo[-1][0][0:2]
+    #     piece_en_mvt = self.cases[Board.coords.index(start)]
+    #     self.cases[Board.coords.index(start)] = Piece(self.histo[-1][1],self.histo[-1][2]) #remplace la position de départ par la pièce mangée précedemment
+    #     self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
+    #     del self.histo[-1]
 
     ####################################################################
 
