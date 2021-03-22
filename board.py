@@ -393,8 +393,7 @@ class Board:
         """Renvoi TRUE ou FALSE
         si le ROI de 'couleur' passée en argument est en échec"""
 
-        # Looking for the id square where is the king
-        # sure, we can code better to avoid this and win kn/s...
+        # on cherche la case du ROI
         # TODO: faire un test d'échec plus optimisé
         for i in range(0,64):
             if(self.cases[i].nom=='ROI' and self.cases[i].couleur==couleur):

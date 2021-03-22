@@ -21,7 +21,7 @@ imgfile2 = "pieces/z_case_indic.png"
 imgitem2 = PhotoImage(file=imgfile2)
 
 def affiche_position(l=[]):
-    canvas.delete("all")
+    canvas.delete("all") # NECESSAIRE POUR L'OPTIMISATION ! (sinon les images s'enpiles au fur et à mesure)
     global imglist #besoin d'etre global sinon disparition des images
     imglist = []
 
@@ -99,7 +99,10 @@ def on_click(evt):
             for i in range(len(liste)):
                 if liste[i][0] == B.caseStr2Int(cmd_bar.get()):
                     l2 += [liste[i][1]]
-            affiche_position(l2)
+            if l2 != []:
+                affiche_position(l2)
+            else:
+                cmd_bar.delete(0,"end")
         elif taille_texte >= 4:
             execute_cmd()
 def on_click2(evt):

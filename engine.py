@@ -13,34 +13,33 @@ class Engine:
 
     def init(self):
         self.endgame=False
-        self.init_depth=4 # search in fixed depth
-        self.nodes=0 # number of nodes
+        self.init_depth=4 # profondeur de recherche fixe
+        self.nodes=0 # nb de noeuds
         self.clear_pv()
 
 
     ####################################################################
 
     def usermove(self,b,c):
-        """Move a piece for the side to move, asked in command line.
-        The command 'c' in argument is like 'e2e4' or 'b7b8q'.
-        Argument 'b' is the chessboard.
+        """Deplace une piece avec 'c' une cmd de la forme 'e2e4' ou 'd7d8q'.
+        L'argument 'b' est l'echequier.
         """
 
         if(self.endgame):
             self.print_result(b)
             return
 
-        # Testing the command 'c'. Exit if incorrect.
+        # on sort de la fonction si 'c' n'est pas une bonne cmd.
         chk=self.chkCmd(c)
         if(chk!=''):
             print(chk)
             return
 
-        # Convert cases names to int, ex : e3 -> 44
+        # on convertit les cases en id (int)
         pos1=b.caseStr2Int(c[0]+c[1])
         pos2=b.caseStr2Int(c[2]+c[3])
 
-        # Promotion asked ?
+        # On demande une promotion ?
         promote=''
         if(len(c)>4):
             promote=c[4]
@@ -83,8 +82,8 @@ class Engine:
         """
 
         err=(
-        'The move must be 4 or 5 letters : e2e4, b1c3, e7e8q...',
-        'Incorrect move.'
+        "Le coup doit etre de la forme 'e2e4' ou 'a8a9q'...",
+        'Coup incorrect'
         )
         letters=('a','b','c','d','e','f','g','h')
         numbers=('1','2','3','4','5','6','7','8')
@@ -109,10 +108,8 @@ class Engine:
     ####################################################################
 
     def search(self,b):
+        """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
-        """Search the best move for the side to move,
-        according to the given chessboard 'b'
-        """
 
         if(self.endgame):
             self.print_result(b)
@@ -159,7 +156,7 @@ class Engine:
         # We arrived at the end of the search : return the board score
         if(depth==0):
             return b.evaluer()
-            # TODO : return quiesce(alpha,beta)
+            # TODO: return quiesce(alpha,beta)
 
         self.nodes+=1
         self.pv_length[b.ply] = b.ply
