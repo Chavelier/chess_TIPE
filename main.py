@@ -21,6 +21,7 @@ imgfile2 = "pieces/z_case_indic.png"
 imgitem2 = PhotoImage(file=imgfile2)
 
 def affiche_position(l=[]):
+    canvas.delete("all")
     global imglist #besoin d'etre global sinon disparition des images
     imglist = []
 
