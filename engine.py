@@ -115,8 +115,7 @@ class Engine:
             self.print_result(b)
             return
 
-        # TODO
-        # search in opening book
+        #TODO : search in opening book
 
         self.clear_pv()
         self.nodes=0
@@ -153,7 +152,7 @@ class Engine:
 
     def alphabeta(self,depth,alpha,beta,b):
 
-        # We arrived at the end of the search : return the board score
+        # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
             return b.evaluer()
             # TODO: return quiesce(alpha,beta)
@@ -228,9 +227,9 @@ class Engine:
     ####################################################################
 
     def print_result(self,b):
-        "Check if the game is over and print the result"
+        "Test si la partie est finie et affiche le resultat"
 
-        # Is there at least one legal move left ?
+        # Y a t'il un coup possible ?
         f=False
         for pos1,pos2,promote in b.gen_moves_list():
             if(b.domove(pos1,pos2,promote)):
@@ -242,11 +241,11 @@ class Engine:
         if(not f):
             if(b.in_check(b.side2move)):
                 if(b.side2move=='blanc'):
-                    print("0-1 {Black mates}")
+                    print("0-1 - Victoire des Noirs")
                 else:
-                    print("1-0 {White mates}")
+                    print("1-0 - Victoire des Blancs")
             else:
-                print("1/2-1/2 {Stalemate}")
+                print("1/2-1/2 - Nulle par Pat")
             self.endgame=True
 
         # TODO
@@ -256,7 +255,6 @@ class Engine:
     ####################################################################
 
     def clear_pv(self):
-
         "Clear the triangular PV table containing best moves lines"
 
         self.pv=[[0 for x in range(self.MAX_PLY)] for x in range(self.MAX_PLY)]

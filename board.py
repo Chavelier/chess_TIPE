@@ -41,7 +41,11 @@ class Board:
         self.side2move='blanc'
         self.ep=-1 # la case ou l'on peut prendre en passant
         self.history=[] # historique des coups
-        self.ply=0 # moitié du nb de coups depuis le début
+        self.ply=0 # nb de coups ('e2e4' 'e7e5' = 1 coups)
+
+        # position des ROI, utile pour les test d'echec
+        self.pos_roi_b = 60
+        self.pos_roi_n = 4
 
         # droit de roque
         self.white_can_castle_56=True
@@ -238,7 +242,7 @@ class Board:
 
             # ROI blanc
             if(pieceDeplacee.couleur=='blanc'):
-
+                self.pos_roi_b = arrivee
                 # on bouge de la case de départ
                 if(depart==60):
                     # alors on interdit tous les roques quelque soit le mouvement
@@ -256,7 +260,7 @@ class Board:
 
             # ROI noir
             else:
-
+                self.pos_roi_n = arrivee
                 if(depart==4):
                     self.black_can_castle_0=False
                     self.black_can_castle_7=False
@@ -366,6 +370,7 @@ class Board:
             # ROI blanc
             if(self.cases[pos1].couleur=='blanc'):
                 # on regarde si la pos originale était sa position initiale
+                self.pos_roi_b = pos1
                 if(pos1==60):
                     # si c'était un roque on replace la TOUR
                     if(pos2==58):
@@ -376,6 +381,7 @@ class Board:
                         self.cases[61]=Piece()
             # ROI noir
             else:
+                self.pos_roi_n = pos1
                 if(pos1==4):
                     if(pos2==2):
                         self.cases[0]=Piece('TOUR','noir')
@@ -395,10 +401,15 @@ class Board:
 
         # on cherche la case du ROI
         # TODO: faire un test d'échec plus optimisé
-        for i in range(0,64):
-            if(self.cases[i].nom=='ROI' and self.cases[i].couleur==couleur):
-                pos=i
-                break
+        # for i in range(0,64):
+        #     if(self.cases[i].nom=='ROI' and self.cases[i].couleur==couleur):
+        #         pos=i
+        #         break
+        if couleur == "blanc":
+            pos = self.pos_roi_b
+        else:
+            pos = self.pos_roi_n
+
         return self.is_attacked(pos,self.oppColor(couleur))
 
 
@@ -457,6 +468,43 @@ class Board:
             return
 
         return self.coord[i]
+
+    ####################################################################
+
+    def evaluer(self):
+        """Fonction d'évaluation d'une position"""
+
+        WhiteScore=0
+        BlackScore=0
+
+        fou_b = 0
+        fou_n = 0
+
+        # Parsing the board squares from 0 to 63
+        for pos1,piece in enumerate(self.cases):
+
+            # Material score
+            if(piece.couleur=='blanc'):
+                if piece.nom == "FOU":
+                    fou_b += 1
+                WhiteScore+=piece.valeur
+            else:
+                if piece.nom == "FOU":
+                    fou_b += 1
+                # NB : here is for black piece or empty square
+                BlackScore+=piece.valeur
+
+        if fou_b >= 2:
+            WhiteScore += 30
+        elif fou_n >= 2:
+            BlackScore += 30
+
+        if(self.side2move=='blanc'):
+            return WhiteScore-BlackScore
+        else:
+            return BlackScore-WhiteScore
+
+
     ####################################################################
 
     @staticmethod #fonction attaché à la classe ne pouvant pas utiliser les variables self dépendant de l'objet créé

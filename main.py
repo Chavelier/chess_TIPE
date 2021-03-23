@@ -70,8 +70,12 @@ def execute_cmd():
         tk.quit()
     elif cmd == "undo":
         E.undomove(B)
-    # elif cmd == "go":
-    #     E
+    elif cmd == "go":
+        E.search(B)
+
+    elif cmd == "d_rpos":
+        print("ROI blanc : "+B.caseInt2Str(B.pos_roi_b))
+        print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
     affiche_position()
@@ -109,13 +113,17 @@ def on_click2(evt):
     if cmd_bar.get() == "":
         cmd_bar.insert("end","undo")
     execute_cmd()
-
+def bot_play(evt):
+    cmd_bar.delete(0,"end")
+    cmd_bar.insert("end","go")
+    execute_cmd()
 
 
 # gestion des touches ----------------------------------------------------------
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
+tk.bind_all('<KeyPress-space>', bot_play)
 
 box = Frame(tk)
 cmd_bar = Entry(box)
