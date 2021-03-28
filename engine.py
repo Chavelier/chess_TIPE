@@ -127,7 +127,7 @@ class Engine:
 
             score=self.alphabeta(i,-self.INFINITY,self.INFINITY,b)
 
-            print("{}\t{}\t{}\t".format(i,self.nodes,score/10),end='')
+            print("{}\t{}\t{}\t".format(i,self.nodes,score/100),end='')
 
             # print PV informations : ply, nodes...
             j=0
@@ -155,7 +155,7 @@ class Engine:
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
             return b.evaluer()
-            # TODO: return quiesce(alpha,beta)
+            #TODO : return quiesce(alpha,beta)
 
         self.nodes+=1
         self.pv_length[b.ply] = b.ply
@@ -170,8 +170,7 @@ class Engine:
         if(chk):
             depth+=1
 
-        # TODO
-        # sort moves : captures first
+        #TODO : sort moves : captures first
 
         # Generate all moves for the side to move. Those who
         # let king in check will be processed in domove()
@@ -219,8 +218,7 @@ class Engine:
             else:
                 return 0 # DRAW
 
-        # TODO
-        # 50 moves rule
+        #TODO : 50 moves rule
 
         return alpha
 

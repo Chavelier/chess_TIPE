@@ -41,7 +41,7 @@ class Board:
         self.side2move='blanc'
         self.ep=-1 # la case ou l'on peut prendre en passant
         self.history=[] # historique des coups
-        self.ply=0 # nb de coups ('e2e4' 'e7e5' = 1 coups)
+        self.ply=0 # nb de coups ('e2e4' 'e7e5' = 1 coup)
 
         # position des ROI, utile pour les test d'echec
         self.pos_roi_b = 60
@@ -490,13 +490,13 @@ class Board:
                 WhiteScore+=piece.valeur
             else:
                 if piece.nom == "FOU":
-                    fou_b += 1
+                    fou_n += 1
                 # NB : here is for black piece or empty square
                 BlackScore+=piece.valeur
 
         if fou_b >= 2:
             WhiteScore += 30
-        elif fou_n >= 2:
+        if fou_n >= 2:
             BlackScore += 30
 
         if(self.side2move=='blanc'):
