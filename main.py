@@ -11,7 +11,7 @@ tk.maxsize(740,600)
 
 canvas = Canvas(tk, width=576, height=576,bd=0, highlightthickness=0)
 
-
+reverse_mode = False
 B = Board() #création échéquier
 E = Engine() #creation engine
 
@@ -36,11 +36,24 @@ def affiche_position(l=[]):
             if (i+j)%2 == 0: col = '#f6f6f6'
             else: col = '#45863d'
 
-            canvas.create_text(mrgx//2,cell*(j+1),text=str(8-j))
-            canvas.create_text(cell*(i+1),mrgy//2,text=chr(65+i))
+            if reverse_mode and B.side2move == "noir":
+                nb_id = j+1
+                ltr_id = 72-i
+                case_id = 63-(i+8*j)
+            else:
+                nb_id = 8-j
+                ltr_id = 65+i
+                case_id = i+8*j
+
+            canvas.create_text(mrgx//2,cell*(j+1),text=str(nb_id))
+            canvas.create_text(cell*(i+1),mrgy//2,text=chr(ltr_id))
             canvas.create_rectangle(mrgx+i*cell,mrgy+j*cell,mrgx+(i+1)*cell,mrgy+(j+1)*cell,fill=col)
 
-            ma_piece = B.cases[i+8*j]
+            if B.history != []:
+                if B.history[-1][0] == case_id or B.history[-1][1] == case_id:
+                    canvas.create_rectangle(mrgx+i*cell,mrgy+j*cell,mrgx+(i+1)*cell,mrgy+(j+1)*cell,fill='orange',stipple="gray50")
+
+            ma_piece = B.cases[case_id]
             if ma_piece.nom != ma_piece.nomPiece[0]:
                 pos = ma_piece.nomPiece.index(ma_piece.nom)-1
                 if ma_piece.couleur == "noir":
@@ -57,7 +70,13 @@ def affiche_position(l=[]):
                 imglist += [""]
     if l != []: #gestion affichage coups possibles
         for pos in l:
-            canvas.create_image(mrgx+(B.COL(pos)+0.5)*cell, mrgy+(B.ROW(pos)+0.5)*cell, image=imgitem2)
+            if reverse_mode and B.side2move == "noir":
+                posx = 7-B.COL(pos)
+                posy = 7-B.ROW(pos)
+            else:
+                posx = B.COL(pos)
+                posy = B.ROW(pos)
+            canvas.create_image(mrgx+(posx+0.5)*cell, mrgy+(posy+0.5)*cell, image=imgitem2)
 
 affiche_position()
 
@@ -72,7 +91,10 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
-
+    elif cmd == "reverse":
+        global reverse_mode
+        reverse_mode = not reverse_mode
+        print("Reverse mode : %s"%reverse_mode)
     elif cmd == "d_rpos":
         print("ROI blanc : "+B.caseInt2Str(B.pos_roi_b))
         print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))
@@ -91,10 +113,15 @@ def button_push(evt=""): #se déclanche lors de l'appui sur bouton
 def on_click(evt):
     casex = (evt.x-32)//64
     casey = (evt.y-32)//64
-    if casex>=0 and casey >=0:
+    if -1<casex<8 and -1<casey<8:
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")
-        c = B.coord[casex+8*casey]
+        if reverse_mode and B.side2move == "noir":
+            coord2case = 63-(casex+8*casey)
+        else:
+            coord2case = casex+8*casey
+
+        c = B.coord[coord2case]
         cmd_bar.insert("end",c)
         taille_texte = len(cmd_bar.get())
         if taille_texte == 2:
