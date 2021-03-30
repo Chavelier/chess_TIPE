@@ -5,7 +5,6 @@ import os
 
 tk = Tk()
 tk.title("Chess")
-tk.wm_attributes("-topmost", 1)
 tk.resizable(width=False,height=False)
 tk.maxsize(740,600)
 

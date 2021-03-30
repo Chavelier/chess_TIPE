@@ -1,5 +1,5 @@
 from piece import *
-import time
+import random
 
 class Engine:
     """l'intelligence artificielle"""
@@ -8,7 +8,7 @@ class Engine:
 
         self.MAX_PLY=32
         self.pv_length=[0 for x in range(self.MAX_PLY)]
-        self.INFINITY=32000
+        self.INFINITY=320000
         self.init()
 
     def init(self):
@@ -111,13 +111,13 @@ class Engine:
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
 
-        if(self.endgame):
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
 
-        #TODO : search in opening book
+        #TODO : utiliser un arbre d'ouverture
 
-        self.clear_pv()
+        self.clear_pv() # on efface l'ancien arbre des variations
         self.nodes=0
         b.ply=0
 
@@ -127,9 +127,10 @@ class Engine:
 
             score=self.alphabeta(i,-self.INFINITY,self.INFINITY,b)
 
+
             print("{}\t{}\t{}\t".format(i,self.nodes,score/100),end='')
 
-            # print PV informations : ply, nodes...
+            # affichages des infos
             j=0
             while(self.pv[j][j]!=0):
                 c=self.pv[j][j]
@@ -155,7 +156,7 @@ class Engine:
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
             return b.evaluer()
-            #TODO : return quiesce(alpha,beta)
+            #TODO : return quiesce(alpha,beta) pour eviter un effet d'horizon !
 
         self.nodes+=1
         self.pv_length[b.ply] = b.ply
@@ -175,6 +176,7 @@ class Engine:
         # Generate all moves for the side to move. Those who
         # let king in check will be processed in domove()
         mList=b.gen_moves_list()
+        random.shuffle(mList)
 
         f=False # flag to know if at least one move will be done
         for i,m in enumerate(mList):
@@ -184,7 +186,7 @@ class Engine:
             # remind : a move is defined with (pos1,pos2,promote)
             # i.e. : 'e7e8q' is (12,4,'q')
             if(not b.domove(m[0],m[1],m[2])):
-                continue
+                continue # on ignore le coup s'il laisse le roi en echec
 
             f=True # a move has passed
 
