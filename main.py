@@ -95,6 +95,10 @@ def execute_cmd():
         global reverse_mode
         reverse_mode = not reverse_mode
         print("Reverse mode : %s"%reverse_mode)
+
+    elif 'sd' in cmd:
+        E.setDepth(cmd)
+
     elif cmd == "d_rpos":
         print("ROI blanc : "+B.caseInt2Str(B.pos_roi_b))
         print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))
@@ -150,7 +154,7 @@ def bot_play(evt):
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
-tk.bind_all('<KeyPress-space>', bot_play)
+tk.bind_all('<KeyPress-Control_L>', bot_play)
 
 box = Frame(tk)
 cmd_bar = Entry(box)
