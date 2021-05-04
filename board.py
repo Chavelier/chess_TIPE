@@ -47,6 +47,7 @@ class Board:
         self.pos_roi_b = 60
         self.pos_roi_n = 4
 
+
         # droit de roque
         self.white_can_castle_56=True
         self.white_can_castle_63=True
@@ -141,6 +142,8 @@ class Board:
             if(piece.nom=='PION'):
                 mList+=piece.pos2_pion(pos1,piece.couleur,self)
                 continue
+
+
         return mList
 
     ####################################################################
@@ -480,19 +483,61 @@ class Board:
         fou_b = 0
         fou_n = 0
 
+        #structures des pions sur les colonnes
+        struct_pion_b = [0,0,0,0,0,0,0,0]
+        struct_pion_n = [0,0,0,0,0,0,0,0]
+        pos_tour_b = [] #colonne tour
+        pos_tour_n = [] #colonne tour
+
         # Parsing the board squares from 0 to 63
         for pos1,piece in enumerate(self.cases):
 
+            # case_c = int(self.is_attacked(pos1,'blanc')) - int(self.is_attacked(pos1,'noir'))
+            # WhiteScore += 5*case_c
             # Material score
             if(piece.couleur=='blanc'):
+                if piece.nom == "TOUR":
+                    pos_tour_b.append(self.COL(pos1))
                 if piece.nom == "FOU":
                     fou_b += 1
                 WhiteScore+=piece.valeur
+                if piece.nom == 'PION':
+                    struct_pion_b[self.COL(pos1)] += 1
             else:
+                if piece.nom == "TOUR":
+                    pos_tour_n.append(self.COL(pos1))
                 if piece.nom == "FOU":
                     fou_n += 1
+                if piece.nom == 'PION':
+                    struct_pion_n[self.COL(pos1)] += 1
                 # NB : here is for black piece or empty square
                 BlackScore+=piece.valeur
+
+        #tours sur colonne ouvertes
+        for col in pos_tour_b:
+            if struct_pion_b[col] == 0:
+                WhiteScore += 30
+        for col in pos_tour_n:
+            if struct_pion_n[col] == 0:
+                BlackScore += 30
+
+
+        #pions isolés
+        sep1 = [-1]
+        sep2 = [-1]
+        for i in range(8):
+            if struct_pion_b[i] == 0:
+                sep1.append(i)
+            if struct_pion_n[i] == 0:
+                sep2.append(i)
+        for i in range(1,len(sep1)):
+            if len(struct_pion_b[sep1[i-1]+1 : sep1[i]]) == 1:
+                WhiteScore -= 40
+        for i in range(1,len(sep2)):
+            if len(struct_pion_n[sep2[i-1]+1 : sep2[i]]) == 1:
+                BlackScore -= 40
+
+
 
         if fou_b >= 2:
             WhiteScore += 30

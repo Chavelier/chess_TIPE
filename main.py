@@ -90,6 +90,8 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
+    elif cmd == "eval" :
+        print(B.side2move + " : " + str(B.evaluer()/100))
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
