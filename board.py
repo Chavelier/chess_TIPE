@@ -143,9 +143,21 @@ class Board:
                 mList+=piece.pos2_pion(pos1,piece.couleur,self)
                 continue
 
-
         return mList
 
+    ####################################################################
+    def tri_move(self,ma_list):
+        """Renvoi la liste des coups trié avec les prises d'abord"""
+        list_fin = []
+        for (pos1,pos2,p) in ma_list:
+            if self.cases[pos2].isEmpty():
+                # print("case vide")
+                list_fin.append((pos1,pos2,p))
+            else:
+                # print(str(pos2) + " " + self.caseInt2Str(pos2))
+                list_fin.insert(0,(pos1,pos2,p))
+        # if list_fin != ma_list: print(list_fin)
+        return list_fin
     ####################################################################
 
     def domove(self,depart,arrivee,promote):

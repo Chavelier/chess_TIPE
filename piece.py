@@ -49,7 +49,7 @@ class Piece:
     ######################################################################
 
     def isEmpty(self):
-        """Renvoi vrai si pas la pièce vide"""
+        """Renvoi vrai si la case est vide"""
 
         return (self.nom==self.VIDE)
 

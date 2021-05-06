@@ -99,7 +99,8 @@ def execute_cmd():
 
     elif 'sd' in cmd:
         E.setDepth(cmd)
-
+    elif 'perft' in cmd:
+        E.perft(cmd,B)
     elif cmd == "d_rpos":
         print("ROI blanc : "+B.caseInt2Str(B.pos_roi_b))
         print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))

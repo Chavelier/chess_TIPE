@@ -1,5 +1,6 @@
 from piece import *
 import random
+import time
 
 class Engine:
     """l'intelligence artificielle"""
@@ -176,7 +177,8 @@ class Engine:
         # Generate all moves for the side to move. Those who
         # let king in check will be processed in domove()
         mList=b.gen_moves_list()
-        random.shuffle(mList)
+        # random.shuffle(mList)
+        b.tri_move(mList) #ordonne les prises en premier
 
         f=False # flag to know if at least one move will be done
         for i,m in enumerate(mList):
@@ -344,6 +346,7 @@ class Engine:
             return 0
 
         l=b.gen_moves_list()
+        # l=b.tri_move(b.gen_moves_list())
 
         for i,m in enumerate(l):
 
