@@ -8,4 +8,3 @@ CONTROL :
 "eval" to evaluate the position
 "reverse" to set the reverse mode (reverse the board for black)
 "sd x" to set the depth of research for ai
-

@@ -19,6 +19,13 @@ imglist = [] #liste des images à afficher (pièces)
 imgfile2 = "pieces/z_case_indic.png"
 imgitem2 = PhotoImage(file=imgfile2)
 
+
+
+
+#Après on peut mettre par ex
+#if ouverture() == "":
+    #lancer l'ia
+
 def affiche_position(l=[]):
     canvas.delete("all") # NECESSAIRE POUR L'OPTIMISATION ! (sinon les images s'enpiles au fur et à mesure)
     global imglist #besoin d'etre global sinon disparition des images
@@ -92,6 +99,10 @@ def execute_cmd():
         E.search(B)
     elif cmd == "eval" :
         print(B.side2move + " : " + str(B.evaluer()/100))
+    elif cmd == "op" :
+        print(E.ouverture(B))
+    elif cmd == "histo" :
+        print(B.history)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode

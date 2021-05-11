@@ -2,8 +2,11 @@ from piece import *
 import random
 import time
 
+
+
 class Engine:
     """l'intelligence artificielle"""
+
 
     def __init__(self):
 
@@ -12,11 +15,13 @@ class Engine:
         self.INFINITY=320000
         self.init()
 
+
     def init(self):
         self.endgame=False
         self.init_depth=4 # profondeur de recherche fixe
         self.nodes=0 # nb de noeuds
         self.clear_pv()
+        self.in_op = True #drapeau pour tester l'ouverture
 
 
     ####################################################################
@@ -112,11 +117,21 @@ class Engine:
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
 
+
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
 
-        #TODO : utiliser un arbre d'ouverture
+        if self.in_op:
+            coups = self.ouverture(b)
+            if coups == []:
+                self.in_op = False
+                print("fin de la phase d'ouverture")
+            else:
+                c = coups[random.randrange(0,len(coups))]
+                print("coup d'ouverture : "+c)
+                b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+                return
 
         self.clear_pv() # on efface l'ancien arbre des variations
         self.nodes=0
@@ -227,6 +242,28 @@ class Engine:
         return alpha
 
     ####################################################################
+    #Pour simplifier l'écriture, il faut définir deux variables
+    #La première : suite_coups est la suite de coup jouée pour le moment par l'ordinateur et par l'ordi sous forme de charactères
+    #La seconde : ligne_partielle est la chaine de charactères de la longueur exactes des coups joués
+
+    def ouverture(self,b):
+        """renvoi la liste des coups jouables depuis la pos selon l'ouverture"""
+        ligne_partielle = ""
+        suite_coups = ""
+        all_coups = [] #liste de tous les coups possibles
+        with open("book.txt",'rt') as ouvertures:
+            for i in range(b.ply):
+                suite_coups += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
+            for ligne in ouvertures:
+                ligne_partielle = ligne[0 : 5*b.ply]
+                if suite_coups == ligne_partielle:
+                    all_coups += [ligne[5*b.ply : 5*b.ply + 4]]
+
+                else :
+                    ligne_partielle = ""
+        return all_coups
+
+    ###################################################################
 
     def print_result(self,b):
         "Test si la partie est finie et affiche le resultat"
