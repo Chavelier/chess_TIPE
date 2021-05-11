@@ -117,7 +117,7 @@ class Engine:
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
 
-
+        print('')
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
