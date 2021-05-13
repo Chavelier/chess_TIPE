@@ -6,9 +6,9 @@ import os
 tk = Tk()
 tk.title("Chess")
 tk.resizable(width=False,height=False)
-tk.maxsize(740,600)
+tk.maxsize(925,750)
 
-canvas = Canvas(tk, width=576, height=576,bd=0, highlightthickness=0)
+canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 
 reverse_mode = False
 B = Board() #création échéquier
@@ -20,27 +20,21 @@ imgfile2 = "pieces/z_case_indic.png"
 imgitem2 = PhotoImage(file=imgfile2)
 
 
-
-
-#Après on peut mettre par ex
-#if ouverture() == "":
-    #lancer l'ia
-
 def affiche_position(l=[]):
     canvas.delete("all") # NECESSAIRE POUR L'OPTIMISATION ! (sinon les images s'enpiles au fur et à mesure)
     global imglist #besoin d'etre global sinon disparition des images
     imglist = []
 
-    mrgx = 32
-    mrgy = 32
-    cell = 64
+    mrgx = 40
+    mrgy = 40
+    cell = 80
 
     folderName="pieces"
     liste=os.listdir(folderName) # =>recupere le nom de tous les fichiers d'un dossier
     for j in range(8):
         for i in range(8):
             if (i+j)%2 == 0: col = '#f6f6f6'
-            else: col = '#45863d'
+            else: col = '#5d8daa'
 
             if reverse_mode and B.side2move == "noir":
                 nb_id = j+1
@@ -103,6 +97,8 @@ def execute_cmd():
         print(E.ouverture(B))
     elif cmd == "histo" :
         print(B.history)
+    elif 'save' in cmd :
+        E.save(B,cmd)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
@@ -128,8 +124,8 @@ def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     execute_cmd()
 
 def on_click(evt):
-    casex = (evt.x-32)//64
-    casey = (evt.y-32)//64
+    casex = (evt.x-40)//80
+    casey = (evt.y-40)//80
     if -1<casex<8 and -1<casey<8:
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")

@@ -487,3 +487,18 @@ class Engine:
 
     def get_ms(self):
         return int(round(time.time() * 1000))
+
+    ####################################################################
+
+    def save(self,b):
+        cmd=
+        historique = ""
+        meta_historique = b.history
+        for i in range(b.ply):
+            historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
+        print(historique)
+        with open("saves.txt",'w') as games_saved:
+            games_saved.write(historique)
+
+        # L'idée est la suivante : il serait intéressant d'archiver la partie, la variation principale (équilibre de Nash?) calculée par l'ia,
+        # et de pouvoir faire défiler les coups avec un click droit ou gauche
