@@ -97,8 +97,8 @@ def execute_cmd():
         print(E.ouverture(B))
     elif cmd == "histo" :
         print(B.history)
-    elif cmd == "save" :
-        E.save(B)
+    elif 'save' in cmd :
+        E.save(B,cmd)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
