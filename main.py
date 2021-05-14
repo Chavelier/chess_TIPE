@@ -19,6 +19,7 @@ imglist = [] #liste des images à afficher (pièces)
 imgfile2 = "pieces/z_case_indic.png"
 imgitem2 = PhotoImage(file=imgfile2)
 
+# Création échequier #################################################################
 
 def affiche_position(l=[]):
     canvas.delete("all") # NECESSAIRE POUR L'OPTIMISATION ! (sinon les images s'enpiles au fur et à mesure)
@@ -80,6 +81,8 @@ def affiche_position(l=[]):
 
 affiche_position()
 
+# Gestion des touches #################################################################
+
 def execute_cmd():
     cmd= cmd_bar.get()
 
@@ -91,6 +94,11 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
+    elif cmd == "droite" :
+        E.compteur(1)
+        E.lecture(B,E.val_compteur)
+    elif cmd == "gauche" :
+        E.undomove(B)
     elif cmd == "eval" :
         print(B.side2move + " : " + str(B.evaluer()/100))
     elif cmd == "op" :
@@ -99,6 +107,8 @@ def execute_cmd():
         print(B.history)
     elif 'save' in cmd :
         E.save(B,cmd)
+    elif 'lire' in cmd :
+        E.lire(B,cmd)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
@@ -117,7 +127,7 @@ def execute_cmd():
 
 
 
-# gestion des touches ----------------------------------------------------------
+# Gestion des touches #################################################################
 
 def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     execute_cmd()
@@ -157,12 +167,26 @@ def bot_play(evt):
     cmd_bar.insert("end","go")
     execute_cmd()
 
+def droite(evt):
+    cmd_bar.delete(0,"end")
+    cmd_bar.insert("end","droite")
+    execute_cmd()
+def gauche(evt):
+    cmd_bar.delete(0,"end")
+    cmd_bar.insert("end","gauche")
+    execute_cmd()
 
-# gestion des touches ----------------------------------------------------------
+
+# Gestion des touches #################################################################
+
+
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
 tk.bind_all('<KeyPress-Control_L>', bot_play)
+tk.bind_all('<Right>', droite)
+tk.bind_all('<Left>', gauche)
+
 
 box = Frame(tk)
 cmd_bar = Entry(box)
