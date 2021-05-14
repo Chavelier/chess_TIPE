@@ -97,6 +97,8 @@ def execute_cmd():
         print(E.ouverture(B))
     elif cmd == "histo" :
         print(B.history)
+    elif 'save_op' == cmd:
+        E.create_op(B)
     elif 'save' in cmd :
         E.save(B,cmd)
     elif cmd == "reverse":

@@ -116,7 +116,6 @@ class Engine:
     def search(self,b):
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
-
         print('')
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
@@ -490,15 +489,29 @@ class Engine:
 
     ####################################################################
 
-    def save(self,b):
-        cmd=
+    def save(self,b,c):
+        cmd=c.split()
+
+        if cmd[0] != "save":
+            print('Commande incorrecte')
+            return
+
         historique = ""
-        meta_historique = b.history
+        # meta_historique = b.history
         for i in range(b.ply):
             historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
-        print(historique)
-        with open("saves.txt",'w') as games_saved:
-            games_saved.write(historique)
+        print("saving : "+historique)
+        with open("saves.txt",'a') as file:
+            file.write('['+' '.join(cmd[1:])+"] : ")
+            file.write(historique)
+            file.write("\n")
 
-        # L'idée est la suivante : il serait intéressant d'archiver la partie, la variation principale (équilibre de Nash?) calculée par l'ia,
-        # et de pouvoir faire défiler les coups avec un click droit ou gauche
+    def create_op(self,b):
+        historique = ""
+
+        for i in range(b.ply):
+            historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
+        print("ouverture enregistrée : "+historique)
+        with open("book.txt",'a') as file:
+            file.write(historique)
+            file.write("\n")
