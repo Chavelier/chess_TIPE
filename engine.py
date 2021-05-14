@@ -193,13 +193,13 @@ class Engine:
 
 
         f=False # flag to know if at least one move will be done
-        for i,c in enumerate(mList):
+        for i,m in enumerate(mList):
 
             # Fais le coup 'c'.
             # Si le roi est en échec, on revient en arrière et on l'ignore
             # Rappel : un coup est défini avec (case_depart,case_arrivee,promote)
             # Par ex : 'e7e8q' donne (12,4,'q')
-            if(not b.domove(c[0],c[1],c[2])):
+            if(not b.domove(m[0],m[1],m[2])):
                 continue # on ignore le coup s'il laisse le roi en echec
 
             f=True #Le coup est passé
