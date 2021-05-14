@@ -297,13 +297,14 @@ class Engine:
         ligne_partielle = ""
         suite_coups = ""
         all_coups = [] #liste de tous les coups possibles
+        nb_coup = len(b.history)
         with open("book.txt",'rt') as ouvertures:
-            for i in range(b.ply):
+            for i in range(nb_coup):
                 suite_coups += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
             for ligne in ouvertures:
-                ligne_partielle = ligne[0 : 5*b.ply]
+                ligne_partielle = ligne[0 : 5*nb_coup]
                 if suite_coups == ligne_partielle:
-                    all_coups += [ligne[5*b.ply : 5*b.ply + 4]]
+                    all_coups += [ligne[5*nb_coup : 5*nb_coup + 4]]
 
                 else :
                     ligne_partielle = ""
@@ -547,9 +548,9 @@ class Engine:
                 return
 
             historique = ""
-            meta_historique = b.history
+            nb_coup = len(b.history)
 
-            for i in range(b.ply):
+            for i in range(nb_coup):
                 historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
             print("saving : "+historique)
             with open("saves.txt",'a') as file:
@@ -563,7 +564,9 @@ class Engine:
     def create_op(self,b):
         historique = ""
 
-        for i in range(b.ply):
+        nb_coup = len(b.history)
+
+        for i in range(nb_coup):
             historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
         print("ouverture enregistrée : "+historique)
         with open("book.txt",'a') as file:
@@ -602,5 +605,5 @@ class Engine:
     def lecture(self,b,val):
         for i in range(val+1):
             coup = self.historique_lire[5*i:5*i+4]
-            print(coup)
+            # print(coup)
             self.userliremove(b,coup)
