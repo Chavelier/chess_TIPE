@@ -1,7 +1,5 @@
 from piece import *
 import random
-import time
-
 
 
 class Engine:
@@ -16,12 +14,15 @@ class Engine:
         self.init()
 
 
+
     def init(self):
         self.endgame=False
         self.init_depth=4 # profondeur de recherche fixe
         self.nodes=0 # nb de noeuds
-        self.clear_pv()
+        self.clear_pv() #arbre de variation
         self.in_op = True #drapeau pour tester l'ouverture
+        self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
+        self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
 
 
     ####################################################################
@@ -58,20 +59,15 @@ class Engine:
             elif(promote=='b'):
                 promote='b'
 
-        # Generate moves list to check
-        # if the given move (pos1,pos2,promote) is correct
+        # On génère la liste des coups possibles pour celui qui a le trait
         mList=b.gen_moves_list()
 
-        # The move is not in list ? or let the king in check ?
+        # Le déplacement est dans la liste ? Ou il laisse le roi en échec ?
         if(((pos1,pos2,promote) not in mList) or \
         (b.domove(pos1,pos2,promote)==False)):
-            print("\n"+c+' : incorrect move or let king in check'+"\n")
+            print("\n"+'Le coup '+c+' ''n\'est pas possible, ou laisse le roi en échec.'+"\n")
             return
 
-        # # Display the chess board
-        # b.render()
-
-        # Check if game is over
         self.print_result(b)
 
         # Let the engine play
@@ -79,12 +75,61 @@ class Engine:
 
     ####################################################################
 
+
+    def userliremove(self,b,c):
+        """Deplace une piece avec 'c' une cmd de la forme 'e2e4' ou 'd7d8q'.
+        L'argument 'b' est l'echequier.
+        """
+
+        if(self.endgame):
+            self.print_result(b)
+            return
+
+        # on sort de la fonction si 'c' n'est pas une bonne cmd.
+        chk=self.chkCmd(c)
+        if(chk!=''):
+            print(chk)
+            return
+
+        # on convertit les cases en id (int)
+        pos1=b.caseStr2Int(c[0]+c[1])
+        pos2=b.caseStr2Int(c[2]+c[3])
+
+        # On demande une promotion ?
+        promote=''
+        if(len(c)>4):
+            promote=c[4]
+            if(promote=='q'):
+                promote='q'
+            elif(promote=='r'):
+                promote='r'
+            elif(promote=='n'):
+                promote='n'
+            elif(promote=='b'):
+                promote='b'
+
+        # On génère la liste des coups possibles pour celui qui a le trait
+        mList=b.gen_moves_list()
+
+        # Le déplacement est dans la liste ? Ou il laisse le roi en échec ?
+        if(((pos1,pos2,promote) not in mList) or \
+        (b.domove(pos1,pos2,promote)==False)):
+            return
+
+        self.print_result(b)
+
+        # Let the engine play
+        #self.search(b)
+
+
+    ####################################################################
+
     def chkCmd(self,c):
 
-        """Check if the command 'c' typed by user is like a move,
-        i.e. 'e2e4','b7b8n'...
-        Returns '' if correct.
-        Returns a string error if not.
+        """Vérifie si la commande 'c' proposée par l'utilisateur,
+        est bien de la forme correcte pour un coup, comme 'e2e4','b7b8n'...
+        Retourne '' si c'est correct.
+        Retourne un string erreur sinon.
         """
 
         err=(
@@ -116,7 +161,8 @@ class Engine:
     def search(self,b):
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
-        print('')
+
+
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
@@ -125,10 +171,10 @@ class Engine:
             coups = self.ouverture(b)
             if coups == []:
                 self.in_op = False
-                print("fin de la phase d'ouverture")
+                print("Fin de la phase d'ouverture")
             else:
                 c = coups[random.randrange(0,len(coups))]
-                print("coup d'ouverture : "+c)
+                print("Coup d'ouverture : "+c)
                 b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
                 return
 
@@ -136,16 +182,16 @@ class Engine:
         self.nodes=0
         b.ply=0
 
-        print("ply\tnodes\tscore\tpv")
+        print("Profondeur\tNoeuds\tScore\tPrincipale variation")
 
         for i in range(1,self.init_depth+1):
 
             score=self.alphabeta(i,-self.INFINITY,self.INFINITY,b)
 
 
-            print("{}\t{}\t{}\t".format(i,self.nodes,score/100),end='')
+            print("{}\t\t{}\t{}\t".format(i,self.nodes,score/100),end='')
 
-            # affichages des infos
+            #Affichage des infos
             j=0
             while(self.pv[j][j]!=0):
                 c=self.pv[j][j]
@@ -155,11 +201,11 @@ class Engine:
                 j+=1
             print()
 
-            # Break if MAT is found
+            # Break si on trouve un mat
             if(score>self.INFINITY-100 or score<-self.INFINITY+100):
                 break
 
-        # root best move found, do it, and print result
+        #le meilleur coup correspond au premier élement de la dernière variation
         best=self.pv[0][0]
         b.domove(best[0],best[1],best[2])
         self.print_result(b)
@@ -176,39 +222,40 @@ class Engine:
         self.nodes+=1
         self.pv_length[b.ply] = b.ply
 
-        # Do not go too deep
+        # Pour ne pas aller trop loin
         if(b.ply >= self.MAX_PLY-1):
             return b.evaluer()
 
-        # Extensions
-        # If king is in check, let's go deeper
+        # Si le roi est en échec, on va plus loin dans l'analyse
         chk=b.in_check(b.side2move) # 'chk' used at the end of func too
         if(chk):
             depth+=1
 
         #TODO : sort moves : captures first
 
-        # Generate all moves for the side to move. Those who
-        # let king in check will be processed in domove()
+        # Génère tous les coups à jouer pour celui qui a le trait.
+        # Ceux qui laissent le roi en échec seront traités avec domove()
         mList=b.gen_moves_list()
-        # random.shuffle(mList)
-        b.tri_move(mList) #ordonne les prises en premier
+        # Ici, j'imagine qu'on randomise la liste des coups possibles pour ne pas avoir
+        # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
+        random.shuffle(mList)
+
 
         f=False # flag to know if at least one move will be done
         for i,m in enumerate(mList):
 
-            # Do the move 'm'.
-            # If it lets king in check, undo it and ignore it
-            # remind : a move is defined with (pos1,pos2,promote)
-            # i.e. : 'e7e8q' is (12,4,'q')
+            # Fais le coup 'c'.
+            # Si le roi est en échec, on revient en arrière et on l'ignore
+            # Rappel : un coup est défini avec (case_depart,case_arrivee,promote)
+            # Par ex : 'e7e8q' donne (12,4,'q')
             if(not b.domove(m[0],m[1],m[2])):
                 continue # on ignore le coup s'il laisse le roi en echec
 
-            f=True # a move has passed
+            f=True #Le coup est passé
 
             score=-self.alphabeta(depth-1,-beta,-alpha,b)
 
-            # Unmake move
+            #On fait machine arrière
             b.undomove()
 
             if(score>alpha):
@@ -293,7 +340,10 @@ class Engine:
     ####################################################################
 
     def clear_pv(self):
-        "Clear the triangular PV table containing best moves lines"
+        "Nettoie la 'table triangulaire' des principales variations contenant"
+        "la ligne des meilleurs coups calculés"
+        "Cette ligne correpond-elle à l'équilibre de Nash des depth-ième sous jeux"
+        "en théorie des jeux?"
 
         self.pv=[[0 for x in range(self.MAX_PLY)] for x in range(self.MAX_PLY)]
 
@@ -382,7 +432,6 @@ class Engine:
             return 0
 
         l=b.gen_moves_list()
-        # l=b.tri_move(b.gen_moves_list())
 
         for i,m in enumerate(l):
 
@@ -489,22 +538,27 @@ class Engine:
 
     ####################################################################
 
+
     def save(self,b,c):
-        cmd=c.split()
+            cmd=c.split()
 
-        if cmd[0] != "save":
-            print('Commande incorrecte')
-            return
+            if cmd[0] != "save":
+                print('Commande incorrecte')
+                return
 
-        historique = ""
-        # meta_historique = b.history
-        for i in range(b.ply):
-            historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
-        print("saving : "+historique)
-        with open("saves.txt",'a') as file:
-            file.write('['+' '.join(cmd[1:])+"] : ")
-            file.write(historique)
-            file.write("\n")
+            historique = ""
+            meta_historique = b.history
+
+            for i in range(b.ply):
+                historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
+            print("saving : "+historique)
+            with open("saves.txt",'a') as file:
+                file.write(' '.join(cmd[1:])+' ')
+                file.write(historique)
+                file.write("\n")
+
+
+    ####################################################################
 
     def create_op(self,b):
         historique = ""
@@ -515,3 +569,38 @@ class Engine:
         with open("book.txt",'a') as file:
             file.write(historique)
             file.write("\n")
+
+    #####################################################################
+    # Compteur pour la lecture des parties et fonctions en ce même sens #
+    #####################################################################
+
+    #Fonctionne pour l'instant, cependant dans l'écriture d'un fichier, il faudra sauvegarder le meta_historique
+    #de sorte que l'on puisse mettre un self.history = meta_historique ou un truc dans le genre
+    #comme ça on peut revenir en arrière
+
+    def compteur(self,val):
+        self.val_compteur = self.val_compteur + val
+
+    def lire(self,b,c):
+        cmd = c.split()
+        partie_in = False
+        with open("saves.txt",'rt') as file:
+            for ligne in file:
+
+                if cmd[1] == ligne[0:len(cmd[1])] :
+
+                    print("Partie trouvée !")
+                    historique = ligne[len(cmd[1])+ 1:]
+                    print("Historique de la partie : "  + historique)
+                    self.historique_lire = historique
+                    partie_in = True
+
+            if partie_in == False:
+                print("Pas de partie sous ce nom dans la base.")
+    #####################################################################
+
+    def lecture(self,b,val):
+        for i in range(val+1):
+            coup = self.historique_lire[5*i:5*i+4]
+            print(coup)
+            self.userliremove(b,coup)

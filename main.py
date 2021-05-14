@@ -91,16 +91,24 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
+    elif cmd == "droite" :
+        E.compteur(1)
+        E.lecture(B,E.val_compteur)
+    elif cmd == "gauche" :
+        E.compteur(-1)
+        E.undomove(B)
     elif cmd == "eval" :
         print(B.side2move + " : " + str(B.evaluer()/100))
     elif cmd == "op" :
         print(E.ouverture(B))
     elif cmd == "histo" :
         print(B.history)
-    elif 'save_op' == cmd:
+    elif cmd == 'save_op':
         E.create_op(B)
     elif 'save' in cmd :
         E.save(B,cmd)
+    elif 'lire' in cmd :
+        E.lire(B,cmd)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
@@ -160,12 +168,23 @@ def bot_play(evt):
     cmd_bar.insert("end","go")
     execute_cmd()
 
+def droite(evt):
+    cmd_bar.delete(0,"end")
+    cmd_bar.insert("end","droite")
+    execute_cmd()
+def gauche(evt):
+    cmd_bar.delete(0,"end")
+    cmd_bar.insert("end","gauche")
+    execute_cmd()
+
 
 # gestion des touches ----------------------------------------------------------
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
 tk.bind_all('<KeyPress-Control_L>', bot_play)
+tk.bind_all('<Right>', droite)
+tk.bind_all('<Left>', gauche)
 
 box = Frame(tk)
 cmd_bar = Entry(box)
