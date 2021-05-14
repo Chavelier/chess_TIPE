@@ -22,7 +22,7 @@ class Engine:
         self.clear_pv() #arbre de variation
         self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
-        self.partie_lire = "" #historique littéral des coups pour la lecture d'une partie
+        self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
 
 
     ####################################################################
@@ -72,6 +72,55 @@ class Engine:
 
         # Let the engine play
         #self.search(b)
+
+    ####################################################################
+
+
+    def userliremove(self,b,c):
+        """Deplace une piece avec 'c' une cmd de la forme 'e2e4' ou 'd7d8q'.
+        L'argument 'b' est l'echequier.
+        """
+
+        if(self.endgame):
+            self.print_result(b)
+            return
+
+        # on sort de la fonction si 'c' n'est pas une bonne cmd.
+        chk=self.chkCmd(c)
+        if(chk!=''):
+            print(chk)
+            return
+
+        # on convertit les cases en id (int)
+        pos1=b.caseStr2Int(c[0]+c[1])
+        pos2=b.caseStr2Int(c[2]+c[3])
+
+        # On demande une promotion ?
+        promote=''
+        if(len(c)>4):
+            promote=c[4]
+            if(promote=='q'):
+                promote='q'
+            elif(promote=='r'):
+                promote='r'
+            elif(promote=='n'):
+                promote='n'
+            elif(promote=='b'):
+                promote='b'
+
+        # On génère la liste des coups possibles pour celui qui a le trait
+        mList=b.gen_moves_list()
+
+        # Le déplacement est dans la liste ? Ou il laisse le roi en échec ?
+        if(((pos1,pos2,promote) not in mList) or \
+        (b.domove(pos1,pos2,promote)==False)):
+            return
+
+        self.print_result(b)
+
+        # Let the engine play
+        #self.search(b)
+
 
     ####################################################################
 
@@ -489,14 +538,37 @@ class Engine:
 
     ####################################################################
 
-    def save(self,b):
+
+    def save(self,b,c):
+            cmd=c.split()
+
+            if cmd[0] != "save":
+                print('Commande incorrecte')
+                return
+
+            historique = ""
+            meta_historique = b.history
+
+            for i in range(b.ply):
+                historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
+            print("saving : "+historique)
+            with open("saves.txt",'a') as file:
+                file.write(' '.join(cmd[1:])+' ')
+                file.write(historique)
+                file.write("\n")
+
+
+    ####################################################################
+
+    def create_op(self,b):
         historique = ""
-        meta_historique = b.history
+
         for i in range(b.ply):
             historique += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
-        print(historique)
-        with open("saves.txt",'w') as games_saved:
-            games_saved.write(historique)
+        print("ouverture enregistrée : "+historique)
+        with open("book.txt",'a') as file:
+            file.write(historique)
+            file.write("\n")
 
     #####################################################################
     # Compteur pour la lecture des parties et fonctions en ce même sens #
@@ -511,7 +583,7 @@ class Engine:
 
     def lire(self,b,c):
         cmd = c.split()
-
+        partie_in = False
         with open("saves.txt",'rt') as file:
             for ligne in file:
 
@@ -520,12 +592,15 @@ class Engine:
                     print("Partie trouvée !")
                     historique = ligne[len(cmd[1])+ 1:]
                     print("Historique de la partie : "  + historique)
-                    self.partie_lire = ligne
+                    self.historique_lire = historique
+                    partie_in = True
 
-                else: print("Pas de partie sous ce nom dans la base.")
-
+            if partie_in == False:
+                print("Pas de partie sous ce nom dans la base.")
     #####################################################################
 
     def lecture(self,b,val):
-        coup = self.partie_lire[5*val:5*val+4]
-        self.usermove(b,coup)
+        for i in range(val+1):
+            coup = self.historique_lire[5*i:5*i+4]
+            print(coup)
+            self.userliremove(b,coup)

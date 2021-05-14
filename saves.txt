@@ -1,1 +1,10 @@
-test g1f3 g8f6 c2c4 b7b6 g2g3
+plsnobug4 e2e4 e7e5 g1f3 f7f6 b1c3 b7b5 f1b5 c7c6 b5c6
+histo(plsnobug4) : (52, 36, <piece.Piece object at 0x0000021C5284BB80>, <piece.Piece object at 0x0000021C5284B0A0>, False, -1, '', True, True, True, True) (12, 28, <piece.Piece object at 0x0000021C52863A00>, <piece.Piece object at 0x0000021C52863880>, False, 44, '', True, True, True, True) (62, 45, <piece.Piece object at 0x0000021C5284B7C0>, <piece.Piece object at 0x0000021C5284BE20>, False, 20, '', True, True, True, True) (13, 21, <piece.Piece object at 0x0000021C52863A60>, <piece.Piece object at 0x0000021C52863D60>, False, -1, '', True, True, True, True) (57, 42, <piece.Piece object at 0x0000021C5284B9A0>, <piece.Piece object at 0x0000021C5284BF40>, False, -1, '', True, True, True, True) (9, 25, <piece.Piece object at 0x0000021C528638E0>, <piece.Piece object at 0x0000021C52863EE0>, False, -1, '', True, True, True, True) (61, 25, <piece.Piece object at 0x0000021C5284B820>, <piece.Piece object at 0x0000021C528638E0>, False, 17, '', True, True, True, True) (10, 18, <piece.Piece object at 0x0000021C52863940>, <piece.Piece object at 0x0000021C52863C40>, False, -1, '', True, True, True, True) (25, 18, <piece.Piece object at 0x0000021C5284B820>, <piece.Piece object at 0x0000021C52863940>, False, -1, '', True, True, True, True)
+bot tropfort g1f3 
+bottropfort 
+iscomeplayin d2d4 
+petittest d2d4 
+petittest2 g1f3 g8f6 d2d4 g7g6 g2g3 f8g7 e2e4 f6e4 
+mvl caruana e2e4 e7e5 g1f3 b8c6 f1b5 a7a6 b5a4 g8f6 e1g1 b7b5 a4b3 f8c5 a2a4 a8b8 c2c3 d7d6 d2d4 c5b6 a4a5 b6a7 h2h3 e8g8 
+mvl_caruana e2e4 e7e5 g1f3 b8c6 f1b5 a7a6 b5a4 g8f6 e1g1 b7b5 a4b3 f8c5 a2a4 a8b8 c2c3 d7d6 d2d4 c5b6 a4a5 b6a7 h2h3 e8g8 
+test21 e2e4 
