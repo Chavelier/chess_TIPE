@@ -486,8 +486,11 @@ class Board:
 
     ####################################################################
 
-    def evaluer(self):
+    def evaluer(self,couleur=''):
         """Fonction d'évaluation d'une position"""
+
+        if couleur == '':
+            couleur = self.side2move
 
         WhiteScore=0
         BlackScore=0
@@ -501,7 +504,7 @@ class Board:
         pos_tour_b = [] #colonne tour
         pos_tour_n = [] #colonne tour
 
-        # Parsing the board squares from 0 to 63
+        # on regarde chaque cases de l'échequier
         for pos1,piece in enumerate(self.cases):
 
             # case_c = int(self.is_attacked(pos1,'blanc')) - int(self.is_attacked(pos1,'noir'))
@@ -515,7 +518,7 @@ class Board:
                 WhiteScore+=piece.valeur
                 if piece.nom == 'PION':
                     struct_pion_b[self.COL(pos1)] += 1
-            else:
+            elif (piece.couleur=='noir'):
                 if piece.nom == "TOUR":
                     pos_tour_n.append(self.COL(pos1))
                 if piece.nom == "FOU":
@@ -556,7 +559,7 @@ class Board:
         if fou_n >= 2:
             BlackScore += 30
 
-        if(self.side2move=='blanc'):
+        if(couleur=='blanc'):
             return WhiteScore-BlackScore
         else:
             return BlackScore-WhiteScore

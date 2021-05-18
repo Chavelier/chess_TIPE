@@ -1,5 +1,6 @@
 from piece import *
 import random
+import time
 
 
 class Engine:
@@ -607,3 +608,56 @@ class Engine:
             coup = self.historique_lire[5*i:5*i+4]
             # print(coup)
             self.userliremove(b,coup)
+
+
+
+
+
+
+
+
+
+    #####################################################################
+
+
+    def minimax(self,depth,MaxPlayer,couleur,b):
+        if depth == 0 or self.endgame:
+            return b.evaluer(couleur)
+
+        mList = b.gen_moves_list()
+
+
+        if MaxPlayer:
+            max_eval = -self.INFINITY
+
+            for i,m in enumerate(mList):
+                if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
+                    continue #on passe le coup si il laisse le roi en echec
+                eval = self.minimax(depth-1,False,couleur,b)
+                max_eval = max(max_eval, eval)
+                b.undomove()
+
+            return max_eval
+
+
+        else:
+            min_eval = self.INFINITY
+
+            for i,m in enumerate(mList):
+                if(not b.domove(m[0],m[1],m[2])):
+                    continue #on passe le coup si il laisse le roi en echec
+                eval = self.minimax(depth-1,True,couleur,b)
+                min_eval = min(min_eval, eval)
+                b.undomove()
+
+            return min_eval
+
+    def play_bot(self,b):
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
+            self.print_result(b)
+            return
+
+        ta = time.time()
+        print("eval : "+str(self.minimax(4,True,b.side2move,b)))
+        tb = time.time()
+        print("temps : "+str(tb-ta))

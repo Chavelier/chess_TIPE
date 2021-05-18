@@ -91,6 +91,8 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
+    elif cmd == "gog":
+        E.play_bot(B)
     elif cmd == "droite" :
         E.compteur(1)
         E.lecture(B,E.val_compteur)
@@ -98,7 +100,7 @@ def execute_cmd():
         E.compteur(-1)
         E.undomove(B)
     elif cmd == "eval" :
-        print(B.side2move + " : " + str(B.evaluer()/100))
+        print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
         print(E.ouverture(B))
     elif cmd == "histo" :
