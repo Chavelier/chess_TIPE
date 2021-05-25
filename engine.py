@@ -27,6 +27,7 @@ class Engine:
 
         self.noeuds = 0
         self.engine_move_list = [] #coups jouables par l'ordi au prochain move
+        self.variation = []
 
 
     ####################################################################
@@ -623,6 +624,52 @@ class Engine:
     #####################################################################
 
 
+    def play_bot(self,val,b):
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
+            self.print_result(b)
+            return
+
+        coups = self.ouverture(b)
+        if coups != []:
+            c = coups[random.randrange(0,len(coups))]
+            print("Coup d'ouverture : "+c)
+            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+            return
+
+
+        self.noeuds = 0
+        self.engine_move_list = []
+        self.variation = [("",0) for i in range(self.MAX_PLY)]
+
+        ta = time.time()
+        # maxval = self.minimax(val,0,b.side2move,b)
+        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b.side2move,b)
+        tb = time.time()
+
+        print("eval : %s"%(maxval/100))
+        print("temps : %s"%(tb-ta))
+        print("noeuds : %s"%self.noeuds)
+
+
+        list = []
+        i = 0
+        while self.variation[i] != ("",0):
+            list.append(self.variation[i])
+            i+=1
+        print("variation principale : %s \n"%str(list))
+
+        random.shuffle(self.engine_move_list)
+        # print(self.engine_move_list)
+        for m in self.engine_move_list:
+            if m[3] == maxval:
+                b.domove(m[0],m[1],m[2])
+                self.print_result(b)
+                break
+
+
+
+
+
     def minimax(self,depth,pr,couleur,b):
         self.noeuds += 1
         if depth == 0 or self.endgame:
@@ -664,37 +711,6 @@ class Engine:
 
 
 
-    def play_bot(self,val,b):
-        if(self.endgame): # on ne peut pas chercher si la partie est finie
-            self.print_result(b)
-            return
-        coups = self.ouverture(b)
-        if coups != []:
-            c = coups[random.randrange(0,len(coups))]
-            print("Coup d'ouverture : "+c)
-            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
-            return
-
-        self.noeuds = 0
-        self.engine_move_list = []
-
-        ta = time.time()
-        # maxval = self.minimax(val,0,b.side2move,b)
-        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b.side2move,b)
-        tb = time.time()
-
-        playbl_lst = []
-        random.shuffle(self.engine_move_list)
-        # print(self.engine_move_list)
-        for m in self.engine_move_list:
-            if m[3] == maxval:
-                b.domove(m[0],m[1],m[2])
-                break
-
-        print("eval : %s"%maxval)
-        print("temps : %s"%(tb-ta))
-        print("noeuds : %s \n"%self.noeuds)
-
 
     def ab(self,depth,pr,alpha,beta,couleur,b):
         self.noeuds += 1
@@ -715,9 +731,12 @@ class Engine:
                 max_eval = max(max_eval, eval)
 
                 alpha = max(alpha,eval)
-                if beta < alpha:
+                if beta <= alpha:
                     break
 
+                if max_eval == eval:
+                    # self.variation[pr] = [m[0],m[1],m[2],eval]
+                    self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
                 if pr == 0:
                     self.engine_move_list.append([m[0],m[1],m[2],eval])
 
@@ -735,6 +754,10 @@ class Engine:
                 min_eval = min(min_eval, eval)
 
                 beta = min(beta,eval)
-                if beta < alpha:
+                if beta <= alpha:
                     break
+
+                if min_eval == eval:
+                    self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
+
             return min_eval
