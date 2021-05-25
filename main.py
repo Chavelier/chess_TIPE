@@ -91,8 +91,8 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "go":
         E.search(B)
-    elif cmd == "gog":
-        E.play_bot(B)
+    elif "gog" in cmd:
+        E.play_bot(int(cmd.split()[1]),B)
     elif cmd == "droite" :
         E.compteur(1)
         E.lecture(B,E.val_compteur)
@@ -109,7 +109,7 @@ def execute_cmd():
         E.create_op(B)
     elif 'save' in cmd :
         E.save(B,cmd)
-    elif 'lire' in cmd :
+    elif 'read' in cmd :
         E.lire(B,cmd)
     elif cmd == "reverse":
         global reverse_mode
@@ -167,7 +167,7 @@ def on_click2(evt):
     execute_cmd()
 def bot_play(evt):
     cmd_bar.delete(0,"end")
-    cmd_bar.insert("end","go")
+    cmd_bar.insert("end","gog 4")
     execute_cmd()
 
 def droite(evt):

@@ -25,6 +25,9 @@ class Engine:
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
 
+        self.noeuds = 0
+        self.engine_move_list = [] #coups jouables par l'ordi au prochain move
+
 
     ####################################################################
 
@@ -620,22 +623,26 @@ class Engine:
     #####################################################################
 
 
-    def minimax(self,depth,MaxPlayer,couleur,b):
+    def minimax(self,depth,pr,couleur,b):
+        self.noeuds += 1
         if depth == 0 or self.endgame:
             return b.evaluer(couleur)
 
         mList = b.gen_moves_list()
 
 
-        if MaxPlayer:
+        if couleur==b.side2move:
             max_eval = -self.INFINITY
 
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
                     continue #on passe le coup si il laisse le roi en echec
-                eval = self.minimax(depth-1,False,couleur,b)
+                eval = self.minimax(depth-1,pr+1,couleur,b)
                 max_eval = max(max_eval, eval)
                 b.undomove()
+
+                if pr == 0:
+                    self.engine_move_list.append([m[0],m[1],m[2],eval])
 
             return max_eval
 
@@ -646,18 +653,88 @@ class Engine:
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])):
                     continue #on passe le coup si il laisse le roi en echec
-                eval = self.minimax(depth-1,True,couleur,b)
+                eval = self.minimax(depth-1,pr+1,couleur,b)
                 min_eval = min(min_eval, eval)
                 b.undomove()
 
+                # if pr == 1:
+                #     self.engine_move_list.append([m[0],m[1],m[2],eval])
+
             return min_eval
 
-    def play_bot(self,b):
+
+
+    def play_bot(self,val,b):
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
+        coups = self.ouverture(b)
+        if coups != []:
+            c = coups[random.randrange(0,len(coups))]
+            print("Coup d'ouverture : "+c)
+            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+            return
+
+        self.noeuds = 0
+        self.engine_move_list = []
 
         ta = time.time()
-        print("eval : "+str(self.minimax(4,True,b.side2move,b)))
+        # maxval = self.minimax(val,0,b.side2move,b)
+        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b.side2move,b)
         tb = time.time()
-        print("temps : "+str(tb-ta))
+
+        playbl_lst = []
+        random.shuffle(self.engine_move_list)
+        # print(self.engine_move_list)
+        for m in self.engine_move_list:
+            if m[3] == maxval:
+                b.domove(m[0],m[1],m[2])
+                break
+
+        print("eval : %s"%maxval)
+        print("temps : %s"%(tb-ta))
+        print("noeuds : %s \n"%self.noeuds)
+
+
+    def ab(self,depth,pr,alpha,beta,couleur,b):
+        self.noeuds += 1
+        if depth == 0 or self.endgame:
+            return b.evaluer(couleur)
+
+        mList = b.gen_moves_list()
+        mList = b.tri_move(mList) #ACCELERE ENORMEMENT LES CALCULS
+
+        if couleur==b.side2move:
+            max_eval = -self.INFINITY
+
+            for i,m in enumerate(mList):
+                if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
+                    continue #on passe le coup si il laisse le roi en echec
+                eval = self.ab(depth-1,pr+1,alpha,beta,couleur,b)
+                b.undomove()
+                max_eval = max(max_eval, eval)
+
+                alpha = max(alpha,eval)
+                if beta < alpha:
+                    break
+
+                if pr == 0:
+                    self.engine_move_list.append([m[0],m[1],m[2],eval])
+
+            return max_eval
+
+
+        else:
+            min_eval = self.INFINITY
+
+            for i,m in enumerate(mList):
+                if(not b.domove(m[0],m[1],m[2])):
+                    continue #on passe le coup si il laisse le roi en echec
+                eval = self.ab(depth-1,pr+1,alpha,beta,couleur,b)
+                b.undomove()
+                min_eval = min(min_eval, eval)
+
+                beta = min(beta,eval)
+                if beta < alpha:
+                    break
+            return min_eval
