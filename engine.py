@@ -663,6 +663,7 @@ class Engine:
         # print(self.engine_move_list)
         for m in self.engine_move_list:
             if m[3] == maxval:
+                print(m[3])
                 b.domove(m[0],m[1],m[2])
                 self.print_result(b)
                 break
