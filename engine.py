@@ -644,7 +644,7 @@ class Engine:
 
         ta = time.time()
         # maxval = self.minimax(val,0,b.side2move,b)
-        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b.side2move,b)
+        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b)
         tb = time.time()
 
         print("eval : %s"%(maxval/100))
@@ -663,7 +663,7 @@ class Engine:
         # print(self.engine_move_list)
         for m in self.engine_move_list:
             if m[3] == maxval:
-                print(m[3])
+                # print(b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),m[3])
                 b.domove(m[0],m[1],m[2])
                 self.print_result(b)
                 break
@@ -679,19 +679,26 @@ class Engine:
 
         mList = b.gen_moves_list()
 
-
         if couleur==b.side2move:
             max_eval = -self.INFINITY
 
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
                     continue #on passe le coup si il laisse le roi en echec
+                f = True
                 eval = self.minimax(depth-1,pr+1,couleur,b)
                 max_eval = max(max_eval, eval)
                 b.undomove()
 
                 if pr == 0:
                     self.engine_move_list.append([m[0],m[1],m[2],eval])
+
+            #si aucun coup joué alors c'est MAT ou EGALITE
+            if(not f):
+                if(chk):
+                    return -self.INFINITY # MAT perdant
+                else:
+                    return 0 # DRAW
 
             return max_eval
 
@@ -702,6 +709,7 @@ class Engine:
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])):
                     continue #on passe le coup si il laisse le roi en echec
+                f = True
                 eval = self.minimax(depth-1,pr+1,couleur,b)
                 min_eval = min(min_eval, eval)
                 b.undomove()
@@ -714,21 +722,32 @@ class Engine:
 
 
 
-    def ab(self,depth,pr,alpha,beta,couleur,b):
+    def ab(self,depth,pr,alpha,beta,b):
         self.noeuds += 1
         if depth == 0 or self.endgame:
-            return b.evaluer(couleur)
+            if pr%2==0:
+                return b.evaluer(b.side2move)
+            else:
+                return b.evaluer(b.oppColor(b.side2move))
+        # Si le roi est en échec, on va plus loin dans l'analyse
+        chk=b.in_check(b.side2move) # 'chk' used at the end of func too
+        if(chk):
+            depth+=1
 
+        f = False
         mList = b.gen_moves_list()
         mList = b.tri_move(mList) #ACCELERE ENORMEMENT LES CALCULS
 
-        if couleur==b.side2move:
+        if pr%2==0:
             max_eval = -self.INFINITY
 
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
                     continue #on passe le coup si il laisse le roi en echec
-                eval = self.ab(depth-1,pr+1,alpha,beta,couleur,b)
+                f = True
+
+                eval = self.ab(depth-1,pr+1,alpha,beta,b)
+
                 b.undomove()
                 max_eval = max(max_eval, eval)
 
@@ -741,6 +760,12 @@ class Engine:
                     self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
                 if pr == 0:
                     self.engine_move_list.append([m[0],m[1],m[2],eval])
+            #si aucun coup joué alors c'est MAT ou EGALITE
+            if(not f):
+                if(chk):
+                    return -self.INFINITY # MAT perdant
+                else:
+                    return 0 # DRAW
 
             return max_eval
 
@@ -751,7 +776,9 @@ class Engine:
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])):
                     continue #on passe le coup si il laisse le roi en echec
-                eval = self.ab(depth-1,pr+1,alpha,beta,couleur,b)
+                f = True
+
+                eval = self.ab(depth-1,pr+1,alpha,beta,b)
                 b.undomove()
                 min_eval = min(min_eval, eval)
 
@@ -761,6 +788,13 @@ class Engine:
 
                 if min_eval == eval:
                     self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
+
+            #si aucun coup joué alors c'est MAT ou EGALITE
+            if(not f):
+                if(chk):
+                    return self.INFINITY # MAT gagnant
+                else:
+                    return 0 # DRAW
 
             return min_eval
 

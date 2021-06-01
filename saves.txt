@@ -1,3 +1,4 @@
 nom_random e2e4 d7d5 e4d5 d8d5 b1c3 d5a5 
 test11 e2e4 c7c6 d2d4 d7d5 b1c3 d5e4 c3e4 c8f5 e4g3 f5g6 h2h4 h7h6 c1f4 d8d5 
 pos_test c2c4 e7e6 b1c3 d7d5 d2d4 g8f6 g1f3 c7c6 c1g5 f8b4 
+berger e2e4 e7e5 f1c4 b8c6 d1f3 h7h6 
