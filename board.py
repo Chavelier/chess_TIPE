@@ -567,6 +567,255 @@ class Board:
 
     ####################################################################
 
+    def setboard(self,fen):
+
+        """Set the board to the FEN position given. i.e. :
+        rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - - 0
+        Returns TRUE or FALSE if done or not.
+        If not : print errors.
+        """
+
+        f=fen.split()
+        err=""
+
+        if(len(f)!=6):
+            err+="Wrong FEN notation. It should be :\n"
+            err+="[pieces] [side to move] [castle rights] [ep] [plys] [move number]\n"
+            err+="i.e. : rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1\n"
+            print(err)
+            return False
+
+        self.init()
+        self.white_can_castle_56=False
+        self.white_can_castle_63=False
+        self.black_can_castle_0=False
+        self.black_can_castle_7=False
+
+        fen =   f[0] # rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR
+        trait = f[1] # b ou w (black,white)
+        roque = f[2] # KQkq
+        ep =    f[3] # e3
+        rule50= f[4] # 0 (half-moves since start of game for 50 moves rule)
+        num =   f[5] # move number
+
+        # Setting pieces
+        i=0
+        for c in fen:
+            if(c=='k'):
+                self.cases[i]=Piece('ROI','noir')
+                i=i+1
+            elif(c=='q'):
+                self.cases[i]=Piece('DAME','noir')
+                i=i+1
+            elif(c=='r'):
+                self.cases[i]=Piece('TOUR','noir')
+                i=i+1
+            elif(c=='n'):
+                self.cases[i]=Piece('CAVALIER','noir')
+                i=i+1
+            elif(c=='b'):
+                self.cases[i]=Piece('FOU','noir')
+                i=i+1
+            elif(c=='p'):
+                self.cases[i]=Piece('PION','noir')
+                i=i+1
+            elif(c=='K'):
+               self.cases[i]=Piece('ROI','blanc')
+               i=i+1
+            elif(c=='Q'):
+               self.cases[i]=Piece('DAME','blanc')
+               i=i+1
+            elif(c=='R'):
+                self.cases[i]=Piece('TOUR','blanc')
+                i=i+1
+            elif(c=='N'):
+                self.cases[i]=Piece('CAVALIER','blanc')
+                i=i+1
+            elif(c=='B'):
+                self.cases[i]=Piece('FOU','blanc')
+                i=i+1
+            elif(c=='P'):
+                self.cases[i]=Piece('PION','blanc')
+                i=i+1
+            elif(c=='/'):
+                pass
+            else: # a number of empty squares is given
+                try:
+                    nb=int(c)
+                except ValueError:
+                    print('Error : wrong FEN. Integer expected.')
+                    return
+                cpt=0
+                while(cpt<nb):
+                    self.cases[i]=Piece()
+                    cpt=cpt+1
+                    i=i+1
+
+        # Checking number of squares
+        if(i!=64):
+            print('Error : wrong FEN.')
+            self.init()
+            return False
+
+        # Site to move
+        if(trait=='b'):
+            self.side2move='noir'
+        else:
+            self.side2move='blanc'
+
+        # Castle rights
+        if(roque!='-'):
+            if('K' in roque):
+                self.white_can_castle_63=True
+            if('Q' in roque):
+                self.white_can_castle_56=True
+            if('k' in roque):
+                self.black_can_castle_7=True
+            if('q' in roque):
+                self.black_can_castle_0=True
+
+        # Prise "en passant"
+        if(ep not in self.coord):
+            self.ep=-1
+        else:
+            self.ep=self.coord.index(ep)
+
+        # TODO
+        # half-moves since start of game for 50 moves rule
+
+        # TODO
+        # move number
+
+        return True
+
+    ####################################################################
+
+    def getboard(self):
+
+        """Returns the FEN notation of the current board. i.e. :
+        rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - - 0
+        """
+
+        emptySq=0 # couting empty squares
+        s='' # constructring the FEN string
+
+        # Parsing each board square (i = 0 to 63)
+        for i,piece in enumerate(self.cases):
+
+            p=piece.nom
+            c=piece.couleur
+
+            if(emptySq==8):
+                s+='8'
+                emptySq=0
+
+            if(i and i%8==0):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                s+='/'
+
+            if(piece.isEmpty()):
+                emptySq+=1
+
+            elif(p=='ROI'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='k'
+                else:
+                    s+='K'
+
+            elif(p=='DAME'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='q'
+                else:
+                    s+='Q'
+
+            elif(p=='TOUR'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='r'
+                else:
+                    s+='R'
+
+            elif(p=='CAVALIER'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='n'
+                else:
+                    s+='N'
+
+            elif(p=='FOU'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='b'
+                else:
+                    s+='B'
+
+            elif(p=='PION'):
+                if(emptySq>0):
+                    s+=str(emptySq)
+                    emptySq=0
+                if(c=='noir'):
+                    s+='p'
+                else:
+                    s+='P'
+
+        if(emptySq>0):
+            s+=str(emptySq)
+
+        # b or w (black,white)
+        if(self.side2move=='blanc'):
+            s+=' w '
+        else:
+            s+=' b '
+
+        # Castle rights (KQkq)
+        no_castle_right=True
+        if(self.white_can_castle_63):
+            s+='K'
+            no_castle_right=False
+        if(self.white_can_castle_56):
+            s+='Q'
+            no_castle_right=False
+        if(self.black_can_castle_7):
+            s+='k'
+            no_castle_right=False
+        if(self.black_can_castle_0):
+            s+='q'
+            no_castle_right=False
+        if(no_castle_right):
+            s+='-'
+
+        # prise en passant e3
+        if(self.ep!=-1):
+            s+=' '+self.coord[self.ep]
+        else:
+            s+=' -'
+
+        # TODO
+        # number of half-moves for 50 moves rule
+        s+=' -'
+
+        # numéro du coup
+        s+=' '+str(int(len(self.history)/2))
+
+        return s
+
+
+##########################################################################
+
     @staticmethod #fonction attaché à la classe ne pouvant pas utiliser les variables self dépendant de l'objet créé
     def ROW(x):
         """Renvoi le numéro de ligne (0 à 7) de la case 'x'"""

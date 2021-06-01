@@ -24,6 +24,7 @@ class Engine:
         self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
+        self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR w KQkq - - 0',1]]
 
 
     ####################################################################
@@ -335,6 +336,10 @@ class Engine:
                 print("1/2-1/2 - Nulle par Pat")
             self.endgame=True
 
+        if self.is_nulle_rep(b):
+            self.endgame=True
+            print("1/2-1/2 - Nulle par répétition")
+
         # TODO
         # 3 reps
         # 50 moves rule
@@ -471,8 +476,7 @@ class Engine:
 
         """The user requests the current FEN position
         with the command 'getboard'"""
-
-        print(b.getboard())
+        return b.getboard()
 
     ####################################################################
 
@@ -609,14 +613,6 @@ class Engine:
             # print(coup)
             self.userliremove(b,coup)
 
-
-
-
-
-
-
-
-
     #####################################################################
 
 
@@ -653,6 +649,7 @@ class Engine:
             return min_eval
 
     def play_bot(self,b):
+
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
@@ -661,3 +658,19 @@ class Engine:
         print("eval : "+str(self.minimax(4,True,b.side2move,b)))
         tb = time.time()
         print("temps : "+str(tb-ta))
+
+
+
+    def is_nulle_rep(self,b):
+
+        f = False
+        for m in (self.listfen):
+            if m[0] == str(self.getboard(b)):
+                m[1] += 1
+                if m[1] >= 3:
+                    return True
+                f = True
+        if not f:
+            self.listfen.append([self.getboard(b),1])
+            # self.listfen += [[self.getboard(b),1]]
+        return False

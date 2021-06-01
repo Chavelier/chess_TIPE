@@ -99,6 +99,10 @@ def execute_cmd():
     elif cmd == "gauche" :
         E.compteur(-1)
         E.undomove(B)
+    elif cmd == "getboard":
+        E.getboard(B)
+    elif cmd == "is_nulle_rep":
+        E.is_nulle_rep(B)
     elif cmd == "eval" :
         print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
@@ -184,9 +188,9 @@ def gauche(evt):
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
-tk.bind_all('<KeyPress-Control_L>', bot_play)
+#tk.bind_all('<KeyPress-Control_L>', bot_play)
 tk.bind_all('<Right>', droite)
-tk.bind_all('<Left>', gauche)
+#tk.bind_all('<Left>', gauche)
 
 box = Frame(tk)
 cmd_bar = Entry(box)
