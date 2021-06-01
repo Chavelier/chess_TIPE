@@ -2,6 +2,8 @@ from board import *
 from tkinter import *
 from engine import *
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
 tk = Tk()
 tk.title("Chess")
@@ -89,6 +91,13 @@ def execute_cmd():
         tk.quit()
     elif cmd == "undo":
         E.undomove(B)
+    elif cmd == "eps":
+        print(E.epsilon)
+        for i in range(E.epsilon):
+            d = 1
+
+    elif cmd == "ieps":
+        E.distrib_proba(B)
     elif cmd == "go":
         E.search(B)
     elif "gog" in cmd:

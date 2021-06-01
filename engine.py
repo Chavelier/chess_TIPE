@@ -24,6 +24,7 @@ class Engine:
         self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
+        self.epsilon = []
 
         self.noeuds = 0
         self.engine_move_list = [] #coups jouables par l'ordi au prochain move
@@ -738,3 +739,7 @@ class Engine:
                 if beta < alpha:
                     break
             return min_eval
+
+    def distrib_proba(self,b):
+        m = len(b.gen_moves_list())
+        self.epsilon += [m]
