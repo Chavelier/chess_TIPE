@@ -690,7 +690,7 @@ class Board:
 
     ####################################################################
 
-    def getboard(self):
+    def getboard(self,for_nulle=False):
 
         """Returns the FEN notation of the current board. i.e. :
         rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - - 0
@@ -774,6 +774,9 @@ class Board:
 
         if(emptySq>0):
             s+=str(emptySq)
+
+        if for_nulle:
+            return s
 
         # b or w (black,white)
         if(self.side2move=='blanc'):

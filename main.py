@@ -110,8 +110,8 @@ def execute_cmd():
         E.undomove(B)
     elif cmd == "getboard":
         E.getboard(B)
-    elif cmd == "is_nulle_rep":
-        E.is_nulle_rep(B)
+    elif cmd == "nulle_rep":
+        print(E.listfen)
     elif cmd == "la_proba":
         L = E.la_proba(B)
         y_list = []
@@ -204,9 +204,9 @@ def gauche(evt):
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
-#tk.bind_all('<KeyPress-Control_L>', bot_play)
+tk.bind_all('<KeyPress-Control_L>', bot_play)
 tk.bind_all('<Right>', droite)
-#tk.bind_all('<Left>', gauche)
+tk.bind_all('<Left>', gauche)
 
 box = Frame(tk)
 cmd_bar = Entry(box)

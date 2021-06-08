@@ -24,7 +24,7 @@ class Engine:
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
-        self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR w KQkq - - 0',1]]
+        self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
         self.epsilon = []
 
@@ -40,7 +40,7 @@ class Engine:
         L'argument 'b' est l'echequier.
         """
 
-        if(self.endgame):
+        if(self.endgame) or self.is_nulle_rep(b):
             self.print_result(b)
             return
 
@@ -71,11 +71,12 @@ class Engine:
         mList=b.gen_moves_list()
 
         # Le déplacement est dans la liste ? Ou il laisse le roi en échec ?
+
         if(((pos1,pos2,promote) not in mList) or \
         (b.domove(pos1,pos2,promote)==False)):
             print("\n"+'Le coup '+c+' ''n\'est pas possible, ou laisse le roi en échec.'+"\n")
             return
-
+        self.add_nulle(b)
         self.print_result(b)
 
         # Let the engine play
@@ -166,7 +167,7 @@ class Engine:
 
     ####################################################################
     def play_bot(self,b):
-        if(self.endgame): # on ne peut pas chercher si la partie est finie
+        if(self.endgame) or self.is_nulle_rep(b): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
 
@@ -175,6 +176,8 @@ class Engine:
             c = coups[random.randrange(0,len(coups))]
             print("Coup d'ouverture : "+c)
             b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+
+            self.add_nulle(b) #ajoute la position a la liste des coups joués
         else:
             self.search(b)
 
@@ -213,6 +216,7 @@ class Engine:
         #le meilleur coup correspond au premier élement de la dernière variation
         best=self.pv[0][0]
         b.domove(best[0],best[1],best[2])
+        self.add_nulle(b) #ajoute la position a la liste des coups joués
         self.print_result(b)
 
     ####################################################################
@@ -257,6 +261,9 @@ class Engine:
                 continue # on ignore le coup s'il laisse le roi en echec
 
             f=True #Le coup est passé
+
+            # self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
+
 
             score=-self.alphabeta(depth-1,-beta,-alpha,b)
 
@@ -374,25 +381,31 @@ class Engine:
         if(b.setboard(' '.join(cmd))):
             self.endgame=False # success, so no endgame
 
-    
+
     ###############################################################
-
-    def is_nulle_rep(self,b):
-
+    def add_nulle(self,b):
         f = False
         for m in (self.listfen):
-            if m[0] == str(self.getboard(b)):
+            if m[0] == self.getboard(b,True):
                 m[1] += 1
-                if m[1] >= 3:
-                    return True
                 f = True
         if not f:
-            self.listfen.append([self.getboard(b),1])
-            # self.listfen += [[self.getboard(b),1]]
+            self.listfen.append([self.getboard(b,True),1])
+    def del_nulle(self,b):
+        for m in (self.listfen):
+            if m[0] == self.getboard(b,True):
+                    m[1] -= 1
+
+    def is_nulle_rep(self,b):
+        for m in (self.listfen):
+            if m[0] == self.getboard(b,True):
+                if m[1] >= 3:
+                    return True
         return False
 
-    def la_proba(self,b):
 
+
+    def la_proba(self,b):
         var = []
         for i in range(1000):
             for j in range (50):
@@ -505,11 +518,11 @@ class Engine:
 
     ####################################################################
 
-    def getboard(self,b):
+    def getboard(self,b,for_nulle=False):
 
         """The user requests the current FEN position
         with the command 'getboard'"""
-        return b.getboard()
+        return b.getboard(for_nulle)
 
     ####################################################################
 
@@ -568,6 +581,7 @@ class Engine:
         "The user requested a 'undomove' in command line"
 
         b.undomove()
+        self.del_nulle(b)
         self.endgame=False
 
     ####################################################################
