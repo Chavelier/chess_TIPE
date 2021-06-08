@@ -674,3 +674,16 @@ class Engine:
             self.listfen.append([self.getboard(b),1])
             # self.listfen += [[self.getboard(b),1]]
         return False
+
+    def la_proba(self,b):
+
+        var = []
+        for i in range(1000):
+            for j in range (50):
+                mList=b.gen_moves_list()
+                var += [len(mList)]
+                random.shuffle(mList)
+                c = mList[0]
+                b.domove(c[0],c[1],c[2])
+            self.newgame(b)
+        return var

@@ -2,6 +2,8 @@ from board import *
 from tkinter import *
 from engine import *
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
 tk = Tk()
 tk.title("Chess")
@@ -103,6 +105,13 @@ def execute_cmd():
         E.getboard(B)
     elif cmd == "is_nulle_rep":
         E.is_nulle_rep(B)
+    elif cmd == "la_proba":
+        L = E.la_proba(B)
+        y_list = []
+        for i in range(100):
+            y_list += [L.count(i)]
+        plt.plot(np.array(list(range(100))), np.array(y_list))
+        plt.show()
     elif cmd == "eval" :
         print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
