@@ -99,9 +99,9 @@ def execute_cmd():
     elif cmd == "ieps":
         E.distrib_proba(B)
     elif cmd == "go":
-        E.search(B)
-    elif "gog" in cmd:
-        E.play_bot(int(cmd.split()[1]),B)
+        E.play_bot(B)
+    # elif "gog" in cmd:
+    #     E.play_bot(int(cmd.split()[1]),B)
     elif cmd == "droite" :
         E.compteur(1)
         E.lecture(B,E.val_compteur)
@@ -176,7 +176,7 @@ def on_click2(evt):
     execute_cmd()
 def bot_play(evt):
     cmd_bar.delete(0,"end")
-    cmd_bar.insert("end","gog 4")
+    cmd_bar.insert("end","go")
     execute_cmd()
 
 def droite(evt):

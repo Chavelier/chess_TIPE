@@ -21,7 +21,7 @@ class Engine:
         self.init_depth=4 # profondeur de recherche fixe
         self.nodes=0 # nb de noeuds
         self.clear_pv() #arbre de variation
-        self.in_op = True #drapeau pour tester l'ouverture
+        # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
         self.epsilon = []
@@ -163,26 +163,23 @@ class Engine:
         return ''
 
     ####################################################################
-
-    def search(self,b):
-        """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
-
-
-
+    def play_bot(self,b):
         if(self.endgame): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
 
-        if self.in_op:
-            coups = self.ouverture(b)
-            if coups == []:
-                self.in_op = False
-                print("Fin de la phase d'ouverture")
-            else:
-                c = coups[random.randrange(0,len(coups))]
-                print("Coup d'ouverture : "+c)
-                b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
-                return
+        coups = self.ouverture(b)
+        if coups != []:
+            c = coups[random.randrange(0,len(coups))]
+            print("Coup d'ouverture : "+c)
+            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+        else:
+            self.search(b)
+
+
+
+    def search(self,b):
+        """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
 
         self.clear_pv() # on efface l'ancien arbre des variations
         self.nodes=0
@@ -625,48 +622,48 @@ class Engine:
     #####################################################################
 
 
-    def play_bot(self,val,b):
-        if(self.endgame): # on ne peut pas chercher si la partie est finie
-            self.print_result(b)
-            return
-
-        coups = self.ouverture(b)
-        if coups != []:
-            c = coups[random.randrange(0,len(coups))]
-            print("Coup d'ouverture : "+c)
-            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
-            return
-
-
-        self.noeuds = 0
-        self.engine_move_list = []
-        self.variation = [("",0) for i in range(self.MAX_PLY)]
-
-        ta = time.time()
-        # maxval = self.minimax(val,0,b.side2move,b)
-        maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b)
-        tb = time.time()
-
-        print("eval : %s"%(maxval/100))
-        print("temps : %s"%(tb-ta))
-        print("noeuds : %s"%self.noeuds)
-
-
-        list = []
-        i = 0
-        while self.variation[i] != ("",0):
-            list.append(self.variation[i])
-            i+=1
-        print("variation principale : %s \n"%str(list))
-
-        random.shuffle(self.engine_move_list)
-        # print(self.engine_move_list)
-        for m in self.engine_move_list:
-            if m[3] == maxval:
-                # print(b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),m[3])
-                b.domove(m[0],m[1],m[2])
-                self.print_result(b)
-                break
+    # def play_bot(self,val,b):
+    #     if(self.endgame): # on ne peut pas chercher si la partie est finie
+    #         self.print_result(b)
+    #         return
+    #
+    #     coups = self.ouverture(b)
+    #     if coups != []:
+    #         c = coups[random.randrange(0,len(coups))]
+    #         print("Coup d'ouverture : "+c)
+    #         b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+    #         return
+    #
+    #
+    #     self.noeuds = 0
+    #     self.engine_move_list = []
+    #     self.variation = [("",0) for i in range(self.MAX_PLY)]
+    #
+    #     ta = time.time()
+    #     # maxval = self.minimax(val,0,b.side2move,b)
+    #     maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b)
+    #     tb = time.time()
+    #
+    #     print("eval : %s"%(maxval/100))
+    #     print("temps : %s"%(tb-ta))
+    #     print("noeuds : %s"%self.noeuds)
+    #
+    #
+    #     list = []
+    #     i = 0
+    #     while self.variation[i] != ("",0):
+    #         list.append(self.variation[i])
+    #         i+=1
+    #     print("variation principale : %s \n"%str(list))
+    #
+    #     random.shuffle(self.engine_move_list)
+    #     # print(self.engine_move_list)
+    #     for m in self.engine_move_list:
+    #         if m[3] == maxval:
+    #             # print(b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),m[3])
+    #             b.domove(m[0],m[1],m[2])
+    #             self.print_result(b)
+    #             break
 
 
 
@@ -729,7 +726,7 @@ class Engine:
                 return b.evaluer(b.side2move)
             else:
                 return b.evaluer(b.oppColor(b.side2move))
-        # Si le roi est en échec, on va plus loin dans l'analyse
+        # # Si le roi est en échec, on va plus loin dans l'analyse
         chk=b.in_check(b.side2move) # 'chk' used at the end of func too
         if(chk):
             depth+=1
@@ -739,7 +736,6 @@ class Engine:
         mList = b.tri_move(mList) #ACCELERE ENORMEMENT LES CALCULS
 
         if pr%2==0:
-            max_eval = -self.INFINITY
 
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])): #en plus de tester fait le coup
@@ -749,15 +745,11 @@ class Engine:
                 eval = self.ab(depth-1,pr+1,alpha,beta,b)
 
                 b.undomove()
-                max_eval = max(max_eval, eval)
 
                 alpha = max(alpha,eval)
                 if beta <= alpha:
                     break
 
-                if max_eval == eval:
-                    # self.variation[pr] = [m[0],m[1],m[2],eval]
-                    self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
                 if pr == 0:
                     self.engine_move_list.append([m[0],m[1],m[2],eval])
             #si aucun coup joué alors c'est MAT ou EGALITE
@@ -767,11 +759,10 @@ class Engine:
                 else:
                     return 0 # DRAW
 
-            return max_eval
+            return alpha
 
 
         else:
-            min_eval = self.INFINITY
 
             for i,m in enumerate(mList):
                 if(not b.domove(m[0],m[1],m[2])):
@@ -780,14 +771,11 @@ class Engine:
 
                 eval = self.ab(depth-1,pr+1,alpha,beta,b)
                 b.undomove()
-                min_eval = min(min_eval, eval)
 
                 beta = min(beta,eval)
                 if beta <= alpha:
                     break
 
-                if min_eval == eval:
-                    self.variation[pr] = (b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),eval)
 
             #si aucun coup joué alors c'est MAT ou EGALITE
             if(not f):
@@ -796,7 +784,7 @@ class Engine:
                 else:
                     return 0 # DRAW
 
-            return min_eval
+            return beta
 
     def distrib_proba(self,b):
         m = len(b.gen_moves_list())
