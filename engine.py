@@ -24,6 +24,8 @@ class Engine:
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
+        self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR w KQkq - - 0',1]]
+
         self.epsilon = []
 
         self.noeuds = 0
@@ -337,6 +339,10 @@ class Engine:
                 print("1/2-1/2 - Nulle par Pat")
             self.endgame=True
 
+        if self.is_nulle_rep(b):
+            self.endgame=True
+            print("1/2-1/2 - Nulle par répétition")
+
         # TODO
         # 3 reps
         # 50 moves rule
@@ -367,6 +373,36 @@ class Engine:
         # set the FEN position on board
         if(b.setboard(' '.join(cmd))):
             self.endgame=False # success, so no endgame
+
+    
+    ###############################################################
+
+    def is_nulle_rep(self,b):
+
+        f = False
+        for m in (self.listfen):
+            if m[0] == str(self.getboard(b)):
+                m[1] += 1
+                if m[1] >= 3:
+                    return True
+                f = True
+        if not f:
+            self.listfen.append([self.getboard(b),1])
+            # self.listfen += [[self.getboard(b),1]]
+        return False
+
+    def la_proba(self,b):
+
+        var = []
+        for i in range(1000):
+            for j in range (50):
+                mList=b.gen_moves_list()
+                var += [len(mList)]
+                random.shuffle(mList)
+                c = mList[0]
+                b.domove(c[0],c[1],c[2])
+            self.newgame(b)
+        return var
 
     ####################################################################
 
@@ -473,8 +509,7 @@ class Engine:
 
         """The user requests the current FEN position
         with the command 'getboard'"""
-
-        print(b.getboard())
+        return b.getboard()
 
     ####################################################################
 
@@ -610,14 +645,6 @@ class Engine:
             coup = self.historique_lire[5*i:5*i+4]
             # print(coup)
             self.userliremove(b,coup)
-
-
-
-
-
-
-
-
 
     #####################################################################
 
@@ -785,7 +812,3 @@ class Engine:
                     return 0 # DRAW
 
             return beta
-
-    def distrib_proba(self,b):
-        m = len(b.gen_moves_list())
-        self.epsilon += [m]
