@@ -675,11 +675,11 @@ class Engine:
             # self.listfen += [[self.getboard(b),1]]
         return False
 
-    def la_proba(self,b):
+    def la_proba(self,b,nb1,nb2):
 
         var = []
-        for i in range(1000):
-            for j in range (50):
+        for i in range(nb1):
+            for j in range (nb2):
                 mList=b.gen_moves_list()
                 var += [len(mList)]
                 random.shuffle(mList)
