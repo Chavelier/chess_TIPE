@@ -12,9 +12,8 @@ class Engine:
         self.MAX_PLY=32
         self.pv_length=[0 for x in range(self.MAX_PLY)]
         self.INFINITY=320000
+        self.hash = [bin(random.getrandbits(64)) for i in range(768)]
         self.init()
-
-
 
     def init(self):
         self.endgame=False
@@ -25,6 +24,8 @@ class Engine:
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
         self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
+
+        self.transposition = [] #table des transpositions liste de liste [id,eval,profondeur]
 
         self.epsilon = []
 
@@ -298,6 +299,24 @@ class Engine:
         #TODO : 50 moves rule
 
         return alpha
+
+    ####################################################################
+    def create_pos_id(self,b):
+        
+        for pos,piece in enumerate(b.cases):
+            piece_tpl = ('ROI','DAME','TOUR','CAVALIER','FOU','PION')
+            if piece.couleur = "blanc":
+                mpt = 0
+            else:
+                mpt = 384
+
+            pos = mpt + piece_tpl.index(piece.nom)*(pos+1)
+
+
+
+
+
+
 
     ####################################################################
     #Pour simplifier l'écriture, il faut définir deux variables
