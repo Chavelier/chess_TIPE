@@ -106,26 +106,7 @@ def execute_cmd():
     elif cmd == "is_nulle_rep":
         E.is_nulle_rep(B)
     elif cmd == "la_proba":
-        L1 = E.la_proba(B,1000,100)
-        y_list1 = []
-        #L2 = E.la_proba(B,1000,30)
-        #y_list2 = []
-        L3 = E.la_proba(B,1000,50)
-        y_list3 = []
-        for i in range(100):
-            y_list1 += [(L1.count(i))/(1000*100)]
-        #for i in range(100):
-            #y_list2 += [(L2.count(i))/(1000*30)]
-        for i in range(100):
-            y_list3 += [(L3.count(i))/(1000*50)]
-        plt.plot(np.array(list(range(100))), np.array(y_list1),label="1000 parties, 100 coups")
-        plt.plot(np.array(list(range(100))), np.array(y_list3),label="1000 parties, 50 coups")
-        #plt.plot(np.array(list(range(100))), np.array(y_list2),label="1000 parties, 30 coups")
-        plt.title("Distribution de probabilité")
-        plt.xlabel("Nombre de coups possibles")
-        plt.ylabel("Probabilité")
-        plt.legend()
-        plt.show()
+        proba_print(E)
     elif cmd == "eval" :
         print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
@@ -154,6 +135,31 @@ def execute_cmd():
         E.usermove(B,cmd)
     affiche_position()
     cmd_bar.delete(0,"end")
+
+
+
+def proba_print(E):
+    L1 = E.la_proba(B,1000,100)
+    y_list1 = []
+    #L2 = E.la_proba(B,1000,30)
+    #y_list2 = []
+    L3 = E.la_proba(B,1000,50)
+    y_list3 = []
+    for i in range(100):
+        y_list1 += [(L1.count(i))/(1000*100)]
+    #for i in range(100):
+        #y_list2 += [(L2.count(i))/(1000*30)]
+    for i in range(100):
+        y_list3 += [(L3.count(i))/(1000*50)]
+    plt.plot(np.array(list(range(100))), np.array(y_list1),label="1000 parties, 100 coups")
+    plt.plot(np.array(list(range(100))), np.array(y_list3),label="1000 parties, 50 coups")
+    #plt.plot(np.array(list(range(100))), np.array(y_list2),label="1000 parties, 30 coups")
+    plt.title("Distribution de probabilité")
+    plt.xlabel("Nombre de coups possibles")
+    plt.ylabel("Probabilité")
+    plt.legend()
+    plt.show()
+
 
 
 

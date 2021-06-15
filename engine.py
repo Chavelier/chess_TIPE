@@ -675,8 +675,9 @@ class Engine:
             # self.listfen += [[self.getboard(b),1]]
         return False
 
-    def la_proba(self,b,nb1,nb2):
 
+
+    def la_proba(self,b,nb1,nb2):
         var = []
         for i in range(nb1):
             for j in range (nb2):
