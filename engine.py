@@ -826,3 +826,18 @@ class Engine:
                     return 0 # DRAW
 
             return beta
+
+
+
+
+    def la_proba(self,b,nb1,nb2):
+        var = []
+        for i in range(nb1):
+            for j in range (nb2):
+                mList=b.gen_moves_list()
+                var += [len(mList)]
+                random.shuffle(mList)
+                c = mList[0]
+                b.domove(c[0],c[1],c[2])
+            self.newgame(b)
+        return var
