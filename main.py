@@ -8,9 +8,12 @@ import matplotlib.pyplot as plt
 tk = Tk()
 tk.title("Chess")
 tk.resizable(width=False,height=False)
-tk.maxsize(925,750)
+tk.maxsize(2000,1000)
 
 canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
+txt = StringVar()
+txt.set("Eval (côté blanc) : 0.0")
+tabl = Label(tk,textvariable=txt)
 
 reverse_mode = False
 B = Board() #création échéquier
@@ -113,26 +116,7 @@ def execute_cmd():
     elif cmd == "nulle_rep":
         print(E.listfen)
     elif cmd == "la_proba":
-        L1 = E.la_proba(B,1000,100)
-        y_list1 = []
-        #L2 = E.la_proba(B,1000,30)
-        #y_list2 = []
-        L3 = E.la_proba(B,1000,50)
-        y_list3 = []
-        for i in range(100):
-            y_list1 += [(L1.count(i))/(1000*100)]
-        #for i in range(100):
-            #y_list2 += [(L2.count(i))/(1000*30)]
-        for i in range(100):
-            y_list3 += [(L3.count(i))/(1000*50)]
-        plt.plot(np.array(list(range(100))), np.array(y_list1),label="1000 parties, 100 coups")
-        plt.plot(np.array(list(range(100))), np.array(y_list3),label="1000 parties, 50 coups")
-        #plt.plot(np.array(list(range(100))), np.array(y_list2),label="1000 parties, 30 coups")
-        plt.title("Distribution de probabilité")
-        plt.xlabel("Nombre de coups possibles")
-        plt.ylabel("Probabilité")
-        plt.legend()
-        plt.show()
+        show_proba(E)
     elif cmd == "eval" :
         print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
@@ -160,7 +144,31 @@ def execute_cmd():
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
     affiche_position()
+    txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
     cmd_bar.delete(0,"end")
+
+
+def show_proba(E):
+    L1 = E.la_proba(B,1000,100)
+    y_list1 = []
+    #L2 = E.la_proba(B,1000,30)
+    #y_list2 = []
+    L3 = E.la_proba(B,1000,50)
+    y_list3 = []
+    for i in range(100):
+        y_list1 += [(L1.count(i))/(1000*100)]
+    #for i in range(100):
+        #y_list2 += [(L2.count(i))/(1000*30)]
+    for i in range(100):
+        y_list3 += [(L3.count(i))/(1000*50)]
+    plt.plot(np.array(list(range(100))), np.array(y_list1),label="1000 parties, 100 coups")
+    plt.plot(np.array(list(range(100))), np.array(y_list3),label="1000 parties, 50 coups")
+    #plt.plot(np.array(list(range(100))), np.array(y_list2),label="1000 parties, 30 coups")
+    plt.title("Distribution de probabilité")
+    plt.xlabel("Nombre de coups possibles")
+    plt.ylabel("Probabilité")
+    plt.legend()
+    plt.show()
 
 
 
@@ -233,6 +241,7 @@ box.pack(expand=YES)
 cmd_bar.grid(row=0, column=0, sticky=W)
 btn.grid(row=0, column=1, sticky=W)
 canvas.pack()
+tabl.pack()
 #Pack()
 
 

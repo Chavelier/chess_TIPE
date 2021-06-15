@@ -2,7 +2,7 @@ class Piece:
     """Pieces du jeu d'échec"""
 
     VIDE = '.'
-    nomPiece=(VIDE,'ROI','REINE','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
+    nomPiece=(VIDE,'ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
 
     valeurPiece=(0,0,900,500,300,300,100) #valeurs des pieces dont l'id correspond
 
@@ -36,8 +36,8 @@ class Piece:
     deplacements_tour=(-10,10,-1,1)
     deplacements_fou=(-11,-9,11,9)
     deplacements_cavalier=(-12,-21,-19,-8,12,21,19,8)
-    #REINE = TOUR+FOU
-    #ROI = REINE mais 1 case
+    #DAME = TOUR+FOU
+    #ROI = DAME mais 1 case
 
 
     def __init__(self,nom=VIDE,couleur=''):

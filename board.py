@@ -28,12 +28,12 @@ class Board:
 
         #initialisation de l'échéquier
         self.cases = [
-        Piece('TOUR','noir'), Piece('CAVALIER','noir'), Piece('FOU','noir'), Piece('REINE','noir'), Piece('ROI','noir'), Piece('FOU','noir'), Piece('CAVALIER','noir'), Piece('TOUR','noir'),
+        Piece('TOUR','noir'), Piece('CAVALIER','noir'), Piece('FOU','noir'), Piece('DAME','noir'), Piece('ROI','noir'), Piece('FOU','noir'), Piece('CAVALIER','noir'), Piece('TOUR','noir'),
         Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'), Piece('PION','noir'),
         Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
         Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
         Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'), Piece('PION','blanc'),
-        Piece('TOUR','blanc'), Piece('CAVALIER','blanc'), Piece('FOU','blanc'), Piece('REINE','blanc'), Piece('ROI','blanc'), Piece('FOU','blanc'), Piece('CAVALIER','blanc'), Piece('TOUR','blanc')
+        Piece('TOUR','blanc'), Piece('CAVALIER','blanc'), Piece('FOU','blanc'), Piece('DAME','blanc'), Piece('ROI','blanc'), Piece('FOU','blanc'), Piece('CAVALIER','blanc'), Piece('TOUR','blanc')
         ]
 
         self.histo = [] #historique des coups
@@ -122,7 +122,7 @@ class Board:
                 mList+=piece.pos2_roi(pos1,self.oppColor(color),self,dontCallIsAttacked)
                 continue
 
-            elif(piece.nom=='REINE'): # REINE = TOUR + FOU
+            elif(piece.nom=='DAME'): # DAME = TOUR + FOU
                 mList+=piece.pos2_tour(pos1,self.oppColor(color),self)
                 mList+=piece.pos2_fou(pos1,self.oppColor(color),self)
                 continue
@@ -297,7 +297,7 @@ class Board:
         # Promotion : le PION est changé en n'importe qu'elle piece
         if(promote!=''):
             if(promote=='q'):
-                self.cases[arrivee]=Piece('REINE',self.side2move)
+                self.cases[arrivee]=Piece('DAME',self.side2move)
             elif(promote=='r'):
                 self.cases[arrivee]=Piece('TOUR',self.side2move)
             elif(promote=='n'):
