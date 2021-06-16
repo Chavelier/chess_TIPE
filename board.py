@@ -1,4 +1,5 @@
 from piece import *
+import random
 
 # import os
 # from PIL import Image, ImageTk ## Importation des modules utiles dans PIL
@@ -54,6 +55,9 @@ class Board:
         self.black_can_castle_0=True
         self.black_can_castle_7=True
 
+        self.hash = [random.getrandbits(64) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
+        self.pos_id = self.create_pos_id()
+
 
     # def move_piece(self,cmd):
     #     """controle le mvt des pieces. cmd = "e2e4" par ex"""
@@ -75,6 +79,29 @@ class Board:
     #     self.cases[Board.coords.index(start)] = Piece(self.histo[-1][1],self.histo[-1][2]) #remplace la position de départ par la pièce mangée précedemment
     #     self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
     #     del self.histo[-1]
+
+    ####################################################################
+
+
+    def create_pos_id(self):
+        position = 0
+        piece_tpl = ('ROI','DAME','TOUR','CAVALIER','FOU','PION')
+        for pos,p in enumerate(self.cases):
+            if p.nom == '':
+                continue
+            if p.couleur == "blanc":
+                mpt = 0
+            else:
+                mpt = 384
+
+            hash_id = mpt + piece_tpl.index(p.nom)*64 + pos
+            position = position^self.hash[hash_id]
+
+        if self.side2move == 'noir':
+            position = position^self.hash[-1]
+
+        return position
+
 
     ####################################################################
 
@@ -326,6 +353,8 @@ class Board:
             self.undomove()
             return False
 
+        self.pos_id = self.create_pos_id()
+
         return True
 
     ####################################################################
@@ -407,6 +436,7 @@ class Board:
 
         # on supprime le dernier coup de l'historique
         self.history.pop()
+        self.pos_id = self.create_pos_id()
 
     ####################################################################
 

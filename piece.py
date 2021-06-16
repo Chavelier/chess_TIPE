@@ -1,7 +1,7 @@
 class Piece:
     """Pieces du jeu d'échec"""
 
-    VIDE = '.'
+    VIDE = ''
     nomPiece=(VIDE,'ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
 
     valeurPiece=(0,0,900,500,300,300,100) #valeurs des pieces dont l'id correspond

@@ -12,12 +12,13 @@ tk.maxsize(2000,1000)
 
 canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 txt = StringVar()
-txt.set("Eval (côté blanc) : 0.0")
 tabl = Label(tk,textvariable=txt)
 
 reverse_mode = False
 B = Board() #création échéquier
 E = Engine() #creation engine
+
+txt.set(str(B.pos_id))
 
 imglist = [] #liste des images à afficher (pièces)
 
@@ -129,6 +130,8 @@ def execute_cmd():
         E.save(B,cmd)
     elif 'read' in cmd :
         E.lire(B,cmd)
+    elif cmd == 'transpo':
+        E.use_table = not E.use_table
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
@@ -143,8 +146,11 @@ def execute_cmd():
         print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
+
+
     affiche_position()
-    txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
+    # txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
+    txt.set(str(B.pos_id))
     cmd_bar.delete(0,"end")
 
 

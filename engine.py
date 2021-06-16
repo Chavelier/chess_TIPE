@@ -12,7 +12,6 @@ class Engine:
         self.MAX_PLY=32
         self.pv_length=[0 for x in range(self.MAX_PLY)]
         self.INFINITY=320000
-        self.hash = [bin(random.getrandbits(64)) for i in range(768)]
         self.init()
 
     def init(self):
@@ -25,7 +24,8 @@ class Engine:
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
         self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
-        self.transposition = [] #table des transpositions liste de liste [id,eval,profondeur]
+        self.transposition = {} #table des transpositions dictionnaire {id : (eval,profondeur)}
+        self.use_table = True
 
         self.epsilon = []
 
@@ -223,10 +223,13 @@ class Engine:
     ####################################################################
 
     def alphabeta(self,depth,alpha,beta,b):
+        key = b.pos_id
 
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
-            return b.evaluer()
+            val = b.evaluer()
+            self.transposition[key] = (val,depth) #on remplace ou on crée l'instance dans la table
+            return val
             #TODO : return quiesce(alpha,beta) pour eviter un effet d'horizon !
 
         self.nodes+=1
@@ -234,7 +237,14 @@ class Engine:
 
         # Pour ne pas aller trop loin
         if(b.ply >= self.MAX_PLY-1):
-            return b.evaluer()
+            val = b.evaluer()
+            self.transposition[key] = (val,depth) #on remplace ou on crée l'instance dans la table
+            return val
+
+        if key in self.transposition and self.use_table:
+            Teval , Tdepth = self.transposition[key]
+            if Tdepth >= depth:
+                return Teval
 
         # Si le roi est en échec, on va plus loin dans l'analyse
         chk=b.in_check(b.side2move) # 'chk' used at the end of func too
@@ -278,6 +288,7 @@ class Engine:
                 # should be ordered higher for the next search
 
                 if(score>=beta):
+                    self.transposition[key] = (beta,depth)
                     return beta
                 alpha = score
 
@@ -292,28 +303,16 @@ class Engine:
         # If no move has been done : it is DRAW or MAT
         if(not f):
             if(chk):
+                self.transposition[key] = (-self.INFINITY + b.ply,depth)
                 return -self.INFINITY + b.ply # MAT
             else:
+                self.transposition[key] = (0,depth)
                 return 0 # DRAW
 
         #TODO : 50 moves rule
 
+        self.transposition[key] = (alpha,depth) #on remplace ou on crée l'instance dans la table
         return alpha
-
-    ####################################################################
-    def create_pos_id(self,b):
-        
-        for pos,piece in enumerate(b.cases):
-            piece_tpl = ('ROI','DAME','TOUR','CAVALIER','FOU','PION')
-            if piece.couleur = "blanc":
-                mpt = 0
-            else:
-                mpt = 384
-
-            pos = mpt + piece_tpl.index(piece.nom)*(pos+1)
-
-
-
 
 
 
@@ -413,7 +412,7 @@ class Engine:
     def del_nulle(self,b):
         for m in (self.listfen):
             if m[0] == self.getboard(b,True):
-                    m[1] -= 1
+                    m[1] = max(m[1]-1,0)
 
     def is_nulle_rep(self,b):
         for m in (self.listfen):
@@ -599,8 +598,8 @@ class Engine:
     def undomove(self,b):
         "The user requested a 'undomove' in command line"
 
-        b.undomove()
         self.del_nulle(b)
+        b.undomove()
         self.endgame=False
 
     ####################################################################
