@@ -21,7 +21,7 @@ class Engine:
         self.clear_pv() #arbre de variation
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
-        self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
+        self.historique_lire = "" #historique littérale des coups pour la lecture d'une partie
         self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
         self.transposition = {} #table des transpositions dictionnaire {id : (eval,profondeur)}
@@ -186,7 +186,7 @@ class Engine:
 
     def search(self,b):
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
-
+        t1 = time.time()
         self.clear_pv() # on efface l'ancien arbre des variations
         self.nodes=0
         b.ply=0
@@ -220,19 +220,25 @@ class Engine:
         self.add_nulle(b) #ajoute la position a la liste des coups joués
         self.print_result(b)
 
+        print("temps d'execution : %s ms \n"%((time.time() - t1)*1000))
+
     ####################################################################
 
     def alphabeta(self,depth,alpha,beta,b):
         key = b.pos_id
-
+        alatable = (key in self.transposition and self.use_table)
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
-            val = b.evaluer()
-            self.transposition[key] = (val,depth) #on remplace ou on crée l'instance dans la table
+            if alatable:
+                val , Tdepth = self.transposition[key]
+            else:
+                val = b.evaluer()
+                self.transposition[key] = (val,depth) #on remplace ou on crée l'instance dans la table
             return val
             #TODO : return quiesce(alpha,beta) pour eviter un effet d'horizon !
 
-        self.nodes+=1
+        if not alatable:
+            self.nodes+=1
         self.pv_length[b.ply] = b.ply
 
         # Pour ne pas aller trop loin
@@ -241,10 +247,6 @@ class Engine:
             self.transposition[key] = (val,depth) #on remplace ou on crée l'instance dans la table
             return val
 
-        if key in self.transposition and self.use_table:
-            Teval , Tdepth = self.transposition[key]
-            if Tdepth >= depth:
-                return Teval
 
         # Si le roi est en échec, on va plus loin dans l'analyse
         chk=b.in_check(b.side2move) # 'chk' used at the end of func too
@@ -258,7 +260,8 @@ class Engine:
         mList=b.gen_moves_list()
         # Ici, j'imagine qu'on randomise la liste des coups possibles pour ne pas avoir
         # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
-        random.shuffle(mList)
+        # random.shuffle(mList)
+        mList=b.tri_move(mList)
 
 
         f=False # flag to know if at least one move will be done
@@ -274,9 +277,14 @@ class Engine:
             f=True #Le coup est passé
 
             # self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
+            Tdepth = -1
+            if alatable:
+                Teval , Tdepth = self.transposition[key]
 
-
-            score=-self.alphabeta(depth-1,-beta,-alpha,b)
+            if Tdepth >= depth:
+                score = Teval
+            else:
+                score=-self.alphabeta(depth-1,-beta,-alpha,b)
 
             #On fait machine arrière
             b.undomove()
@@ -288,7 +296,7 @@ class Engine:
                 # should be ordered higher for the next search
 
                 if(score>=beta):
-                    self.transposition[key] = (beta,depth)
+                    self.transposition[key] = (beta,max(depth,Tdepth))
                     return beta
                 alpha = score
 
@@ -576,7 +584,7 @@ class Engine:
                 return
 
             start_time=self.get_ms()
-            self.search(b)
+            self.play_bot(b)
             stop_time=self.get_ms()
             timeDiff.append(stop_time-start_time)
             print('Time:',timeDiff[i],'ms\n')
@@ -588,7 +596,7 @@ class Engine:
 
         print('Best time:',timeDiff[0],'ms')
         print('Nodes:',self.nodes)
-        print('Nodes per second:',round(self.nodes/timeDiff[0],2),'kn/s')
+        # print('Nodes per second:',round(self.nodes/timeDiff[0],2),'kn/s')
 
         # Restoring changed values
         self.init_depth=oldDepth
@@ -848,12 +856,13 @@ class Engine:
 
 
 
-    def la_proba(self,b,nb1,nb2):
+    def la_proba(self,b,nb1,nb2,n):
         var = []
         for i in range(nb1):
             for j in range (nb2):
+                if j > n :
+                    var += [len(mList)]
                 mList=b.gen_moves_list()
-                var += [len(mList)]
                 random.shuffle(mList)
                 c = mList[0]
                 b.domove(c[0],c[1],c[2])

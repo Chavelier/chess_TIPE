@@ -132,6 +132,7 @@ def execute_cmd():
         E.lire(B,cmd)
     elif cmd == 'transpo':
         E.use_table = not E.use_table
+        print("table de transposition : %s"%E.use_table)
     elif cmd == "reverse":
         global reverse_mode
         reverse_mode = not reverse_mode
@@ -155,11 +156,11 @@ def execute_cmd():
 
 
 def show_proba(E):
-    L1 = E.la_proba(B,1000,100)
+    L1 = E.la_proba(B,1000,100,7)
     y_list1 = []
     #L2 = E.la_proba(B,1000,30)
     #y_list2 = []
-    L3 = E.la_proba(B,1000,50)
+    L3 = E.la_proba(B,1000,50,7)
     y_list3 = []
     for i in range(100):
         y_list1 += [(L1.count(i))/(1000*100)]
