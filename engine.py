@@ -22,10 +22,11 @@ class Engine:
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littérale des coups pour la lecture d'une partie
-        self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
         self.transposition = {} #table des transpositions dictionnaire {id : (eval,profondeur)}
         self.use_table = True
+
+        self.drawpos = {} #dictionnaire contenant les pos et le nombre de fois qu'une pos a été joué
 
         self.epsilon = []
 
@@ -276,17 +277,20 @@ class Engine:
 
             f=True #Le coup est passé
 
-            # self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
+            self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
             Tdepth = -1
             if alatable:
                 Teval , Tdepth = self.transposition[key]
 
-            if Tdepth >= depth:
+            if self.is_nulle_rep(b):
+                score = 0 - b.evaluer()
+            elif Tdepth >= depth:
                 score = Teval
             else:
                 score=-self.alphabeta(depth-1,-beta,-alpha,b)
 
             #On fait machine arrière
+            self.del_nulle(b)
             b.undomove()
 
             if(score>alpha):
@@ -410,23 +414,21 @@ class Engine:
 
     ###############################################################
     def add_nulle(self,b):
-        f = False
-        for m in (self.listfen):
-            if m[0] == self.getboard(b,True):
-                m[1] += 1
-                f = True
-        if not f:
-            self.listfen.append([self.getboard(b,True),1])
+        p = b.pos_id
+        if p in self.drawpos:
+            self.drawpos[p] += 1
+        else:
+            self.drawpos[p] = 1
     def del_nulle(self,b):
-        for m in (self.listfen):
-            if m[0] == self.getboard(b,True):
-                    m[1] = max(m[1]-1,0)
+        p = b.pos_id
+        if p in self.drawpos:
+            self.drawpos[p] -= 1
 
     def is_nulle_rep(self,b):
-        for m in (self.listfen):
-            if m[0] == self.getboard(b,True):
-                if m[1] >= 3:
-                    return True
+        p = b.pos_id
+        if p in self.drawpos:
+            if self.drawpos[p] >= 3:
+                return True
         return False
 
 

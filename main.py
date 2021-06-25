@@ -18,6 +18,8 @@ reverse_mode = False
 B = Board() #création échéquier
 E = Engine() #creation engine
 
+E.add_nulle(B) #ajoute la premiere position à la liste pour les nulles
+
 txt.set(str(B.pos_id))
 
 imglist = [] #liste des images à afficher (pièces)
@@ -91,6 +93,7 @@ def execute_cmd():
 
     if cmd == "new":
         E.newgame(B)
+        E.add_nulle(B)
     elif cmd == "quit":
         tk.quit()
     elif cmd == "undo":
@@ -112,8 +115,10 @@ def execute_cmd():
     elif cmd == "gauche" :
         E.compteur(-1)
         E.undomove(B)
+    elif "setboard" in cmd:
+        E.setboard(B,cmd)
     elif cmd == "getboard":
-        E.getboard(B)
+        print(E.getboard(B))
     elif cmd == "nulle_rep":
         print(E.listfen)
     elif cmd == "la_proba":
@@ -234,6 +239,7 @@ tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
 tk.bind_all('<KeyPress-Control_L>', bot_play)
+# tk.bind_all('<Up>', bot_play)
 tk.bind_all('<Right>', droite)
 tk.bind_all('<Left>', gauche)
 

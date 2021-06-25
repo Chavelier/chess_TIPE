@@ -21,6 +21,67 @@ class Board:
     'a1','b1','c1','d1','e1','f1','g1','h1'
     ]
 
+    knightmap = [
+    0,1,2,2,2,2,1,0,
+    1,2,4,4,4,4,2,1,
+    2,4,8,8,8,8,4,2,
+    2,4,8,10,10,8,4,2,
+    2,4,8,10,10,8,4,2,
+    2,4,8,8,8,8,4,2,
+    0,1,2,2,2,2,1,0,
+    1,2,4,4,4,4,2,1
+    ]
+    kingmap = [
+    0,-1,-1,-2,-2,-1,-1,0,
+    0,-1,-1,-2,-2,-1,-1,0,
+    1,0,-1,-2,-2,-1,0,1,
+    1,0,-1,-2,-2,-1,0,1,
+    2,1,1,0,0,1,1,2,
+    2,1,1,1,1,1,1,2,
+    3,2,1,1,1,1,2,3,
+    5,10,4,2,2,4,10,5
+    ]
+    rookmap = [
+    1,1,1,1,1,1,1,1,
+    3,5,5,5,5,5,5,3,
+    -8,0,0,0,0,0,0,-8,
+    -8,0,0,0,0,0,0,-8,
+    -8,0,0,0,0,0,0,-8,
+    -8,0,0,0,0,0,0,-8,
+    -8,0,0,0,0,0,0,-8,
+    0,0,2,4,4,2,0,0
+    ]
+    pawnmap = [
+    0,0,0,0,0,0,0,0,
+    8,8,8,8,8,8,8,8,
+    1,1,3,5,5,3,1,1,
+    1,1,3,5,5,3,1,1,
+    1,1,3,5,5,3,1,1,
+    3,0,-1,0,0,-1,0,3,
+    2,5,5,-4,-4,5,5,2,
+    0,0,0,0,0,0,0,0
+    ]
+    queenmap = [
+    0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,
+    0,0,0,8,8,0,0,0,
+    0,0,0,8,8,0,0,0,
+    0,0,0,0,0,4,0,0,
+    0,0,4,2,2,0,0,0,
+    0,0,0,5,0,0,0,0,
+    ]
+    bishopmap = [
+    0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,
+    0,5,0,0,0,0,5,0,
+    0,0,0,0,0,0,0,0,
+    0,0,5,0,0,5,0,0,
+    0,0,0,0,0,0,0,0,
+    0,10,0,0,0,0,10,0,
+    0,0,3,0,0,3,0,0
+    ]
+
     def __init__(self):
         self.init()
 
@@ -522,6 +583,8 @@ class Board:
         if couleur == '':
             couleur = self.side2move
 
+        modifval = 5
+
         WhiteScore=0
         BlackScore=0
 
@@ -543,18 +606,36 @@ class Board:
             if(piece.couleur=='blanc'):
                 if piece.nom == "TOUR":
                     pos_tour_b.append(self.COL(pos1))
-                if piece.nom == "FOU":
+                    WhiteScore += modifval*self.rookmap[pos1]
+                elif piece.nom == "FOU":
                     fou_b += 1
-                WhiteScore+=piece.valeur
-                if piece.nom == 'PION':
+                    WhiteScore += modifval*self.bishopmap[pos1]
+                elif piece.nom == "CAVALIER":
+                    WhiteScore += modifval*self.knightmap[pos1]
+                elif piece.nom == "DAME":
+                    WhiteScore += modifval*self.queenmap[pos1]
+                elif piece.nom == "ROI":
+                    WhiteScore += modifval*self.kingmap[pos1]
+                elif piece.nom == "PION":
                     struct_pion_b[self.COL(pos1)] += 1
+                    WhiteScore += modifval*self.pawnmap[pos1]
+                WhiteScore+=piece.valeur
             elif (piece.couleur=='noir'):
                 if piece.nom == "TOUR":
                     pos_tour_n.append(self.COL(pos1))
-                if piece.nom == "FOU":
+                    BlackScore += modifval*self.rookmap[-1-pos1]
+                elif piece.nom == "FOU":
                     fou_n += 1
-                if piece.nom == 'PION':
+                    BlackScore += modifval*self.bishopmap[-1-pos1]
+                elif piece.nom == "CAVALIER":
+                    BlackScore += modifval*self.knightmap[-1-pos1]
+                elif piece.nom == "DAME":
+                    BlackScore += modifval*self.queenmap[-1-pos1]
+                elif piece.nom == "ROI":
+                    BlackScore += modifval*self.kingmap[-1-pos1]
+                elif piece.nom == "PION":
                     struct_pion_n[self.COL(pos1)] += 1
+                    BlackScore += modifval*self.pawnmap[-1-pos1]
                 # NB : here is for black piece or empty square
                 BlackScore+=piece.valeur
 

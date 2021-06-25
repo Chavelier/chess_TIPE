@@ -5,3 +5,4 @@ berger e2e4 e7e5 f1c4 b8c6 d1f3 h7h6
 test5 d2d4 g8f6 c2c4 e7e6 b1c3 d7d5 g2g3 f8b4 a2a3 b4c3 b2c3 f6e4 c1b2 e4f2
 attraction d2d4 e7e6 g1f3 f7f5 b1c3 g8f6 c1g5 f8e7 g5f6 e7f6 e2e4 f5e4 c3e4 b7b6 f3e5 e8g8 f1d3 c8b7 d1h5 d8e7 
 ralala e2e4 c7c5 g1f3 d7d6 d2d4 c5d4 f3d4 g8f6 b1c3 e7e6 g2g4 b8d7 
+test_nulle g1h1 g8h8 h1g1 h8g8 
