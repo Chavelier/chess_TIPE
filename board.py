@@ -22,14 +22,14 @@ class Board:
     ]
 
     knightmap = [
-    0,1,2,2,2,2,1,0,
-    1,2,4,4,4,4,2,1,
-    2,4,8,8,8,8,4,2,
-    2,4,8,10,10,8,4,2,
-    2,4,8,10,10,8,4,2,
-    2,4,8,8,8,8,4,2,
-    0,1,2,2,2,2,1,0,
-    1,2,4,4,4,4,2,1
+    -4,-1,0,0,0,0,-1,-4,
+    -1,0,2,2,2,2,0,-1,
+    0,2,4,4,4,4,2,0,
+    0,2,4,8,8,4,2,0,
+    0,2,4,8,8,4,2,0,
+    0,2,4,4,4,4,2,0,
+    -1,0,2,2,2,2,0,-1,
+    -4,-1,0,0,0,0,-1,-4
     ]
     kingmap = [
     0,-1,-1,-2,-2,-1,-1,0,
@@ -642,10 +642,10 @@ class Board:
         #tours sur colonne ouvertes
         for col in pos_tour_b:
             if struct_pion_b[col] == 0:
-                WhiteScore += 30
+                WhiteScore += 50
         for col in pos_tour_n:
             if struct_pion_n[col] == 0:
-                BlackScore += 30
+                BlackScore += 50
 
 
         #pions isolés
@@ -657,18 +657,20 @@ class Board:
             if struct_pion_n[i] == 0:
                 sep2.append(i)
         for i in range(1,len(sep1)):
-            if len(struct_pion_b[sep1[i-1]+1 : sep1[i]]) == 1:
-                WhiteScore -= 40
+            ilot = struct_pion_b[sep1[i-1]+1 : sep1[i]]
+            if len(ilot) == 1:
+                WhiteScore -= 40*ilot[0]
         for i in range(1,len(sep2)):
-            if len(struct_pion_n[sep2[i-1]+1 : sep2[i]]) == 1:
-                BlackScore -= 40
+            ilot = struct_pion_n[sep2[i-1]+1 : sep2[i]]
+            if len(ilot) == 1:
+                BlackScore -= 40*ilot[0]
 
 
 
         if fou_b >= 2:
-            WhiteScore += 30
+            WhiteScore += 60
         if fou_n >= 2:
-            BlackScore += 30
+            BlackScore += 60
 
         if(couleur=='blanc'):
             return WhiteScore-BlackScore
