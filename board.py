@@ -110,6 +110,7 @@ class Board:
         self.pos_roi_n = 4
 
 
+
         # droit de roque
         self.white_can_castle_56=True
         self.white_can_castle_63=True
@@ -583,7 +584,7 @@ class Board:
         if couleur == '':
             couleur = self.side2move
 
-        modifval = 5
+        modifval = (((-0.5)/30)*self.ply + 1)
 
         WhiteScore=0
         BlackScore=0
@@ -609,8 +610,12 @@ class Board:
                     WhiteScore += modifval*self.rookmap[pos1]
                 elif piece.nom == "FOU":
                     fou_b += 1
+                    if pos1 != 58 and pos1 != 61:
+                        WhiteScore += 10
                     WhiteScore += modifval*self.bishopmap[pos1]
                 elif piece.nom == "CAVALIER":
+                    if pos1 != 57 and pos1 != 62:
+                        WhiteScore += 10
                     WhiteScore += modifval*self.knightmap[pos1]
                 elif piece.nom == "DAME":
                     WhiteScore += modifval*self.queenmap[pos1]
@@ -626,8 +631,12 @@ class Board:
                     BlackScore += modifval*self.rookmap[-1-pos1]
                 elif piece.nom == "FOU":
                     fou_n += 1
+                    if pos1 != 2 and pos1 != 5:
+                        BlackScore += 10
                     BlackScore += modifval*self.bishopmap[-1-pos1]
                 elif piece.nom == "CAVALIER":
+                    if pos1 != 1 and pos1 != 6:
+                        BlackScore += 10
                     BlackScore += modifval*self.knightmap[-1-pos1]
                 elif piece.nom == "DAME":
                     BlackScore += modifval*self.queenmap[-1-pos1]
@@ -647,6 +656,11 @@ class Board:
             if struct_pion_n[col] == 0:
                 BlackScore += 50
 
+        #roi sur colonne ouverte
+        if struct_pion_b[self.COL(self.pos_roi_b)] == 0:
+            WhiteScore -= 150
+        if struct_pion_n[self.COL(self.pos_roi_n)] == 0:
+            BlackScore -= 150
 
         #pions isolés
         sep1 = [-1]
