@@ -286,6 +286,7 @@ class Engine:
                 score = 0 - b.evaluer()
             elif Tdepth >= depth:
                 score = Teval
+                depth = Tdepth
             else:
                 score=-self.alphabeta(depth-1,-beta,-alpha,b)
 
@@ -300,7 +301,7 @@ class Engine:
                 # should be ordered higher for the next search
 
                 if(score>=beta):
-                    self.transposition[key] = (beta,max(depth,Tdepth))
+                    self.transposition[key] = (beta,depth)
                     return beta
                 alpha = score
 
