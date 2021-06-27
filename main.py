@@ -100,7 +100,7 @@ def execute_cmd():
             d = 1
 
     elif cmd == "ieps":
-        E.distrib_proba(B)
+        print(B.cases)
     elif cmd == "go":
         E.play_bot(B)
     # elif "gog" in cmd:

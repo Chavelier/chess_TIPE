@@ -34,6 +34,7 @@ class Engine:
         self.variation = []
 
 
+
     ####################################################################
 
     def usermove(self,b,c):
@@ -302,10 +303,10 @@ class Engine:
 
     ####################################################################
     def create_pos_id(self,b):
-        
+
         for pos,piece in enumerate(b.cases):
             piece_tpl = ('ROI','DAME','TOUR','CAVALIER','FOU','PION')
-            if piece.couleur = "blanc":
+            if piece.couleur == "blanc":
                 mpt = 0
             else:
                 mpt = 384

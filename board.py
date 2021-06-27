@@ -53,6 +53,124 @@ class Board:
         self.white_can_castle_63=True
         self.black_can_castle_0=True
         self.black_can_castle_7=True
+        self.val_cases_roi_blanc = [
+        4,3,2,0,0,2,4,4,
+        4,3,2,0,0,2,4,4,
+        8,4,2,0,0,2,4,8,
+        8,4,2,0,0,2,4,8,
+        12,10,10,8,8,10,10,12,
+        12,10,10,10,10,10,10,12,
+        15,12,10,10,10,10,12,15,
+        16,20,12,10,10,12,20,16
+        ]
+        self.val_cases_roi_noir = [
+        16, 20, 12, 10, 10, 12, 20, 16,
+        15,12, 10, 10, 10, 10, 12, 15,
+        12, 10, 10, 10, 10, 10, 10, 12,
+        12, 10, 10, 8, 8, 10, 10, 12,
+        8, 4, 2, 0, 0, 2, 4, 8,
+        8, 4, 2, 0, 0, 2, 4, 8,
+        4, 4, 2, 0, 0, 2, 3, 4,
+        4, 4, 2, 0, 0, 2, 3, 4]
+        self.val_cases_cavalier_blanc = [
+        0,4,6,6,6,6,4,0,
+        4,7,10,10,10,10,7,4,
+        6,10,12,15,15,12,10,6,
+        6,10,15,20,20,15,10,6,
+        6,10,15,20,20,15,10,6,
+        6,10,12,15,15,12,10,6,
+        4,6,10,10,10,10,6,4,
+        0,4,6,6,6,6,4,0
+        ]
+        self.val_cases_cavalier_noir = [
+        0, 4, 6, 6, 6, 6, 4, 0,
+        4, 6, 10, 10, 10, 10, 6, 4,
+        6, 10, 12, 15, 15, 12, 10, 6,
+        6, 10, 15, 20, 20, 15, 10, 6,
+        6, 10, 15, 20, 20, 15, 10, 6,
+        6, 10, 12, 15, 15, 12, 10, 6,
+        4, 7, 10, 10, 10, 10, 7, 4,
+        0, 4, 6, 6, 6, 6, 4, 0]
+        self.val_cases_dame_blanc = [
+        0,4,4,8,8,4,4,0,
+        4,10,10,10,10,10,10,4,
+        4,10,12,14,14,12,10,4,
+        4,12,16,18,18,16,12,4,
+        4,10,20,18,18,20,10,4,
+        4,14,20,14,14,20,14,4,
+        4,10,10,10,10,10,10,4,
+        0,4,4,8,8,4,4,0
+        ]
+        self.val_cases_dame_noir = [
+        0, 4, 4, 8, 8, 4, 4, 0,
+        4, 10, 10, 10, 10, 10, 10, 4,
+        4, 14, 20, 14, 14, 20, 14, 4,
+        4, 10, 20, 18, 18, 20, 10, 4,
+        4, 12, 16, 18, 18, 16, 12, 4,
+        4, 10, 12, 14, 14, 12, 10, 4,
+        4, 10, 10, 10, 10, 10, 10, 4,
+        0, 4, 4, 8, 8, 4, 4, 0
+        ]
+        self.val_cases_pion_blanc = [
+        20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,
+        4,10,12,14,14,12,10,4,
+        4,10,10,12,12,10,10,4,
+        4,10,16,20,20,16,10,4,
+        4,12,18,14,14,18,12,4,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0
+        ]
+        self.val_cases_pion_noir = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        4, 12, 18, 14, 14, 18, 12, 4,
+        4, 10, 16, 20, 20, 16, 10, 4,
+        4, 10, 10, 12, 12, 10, 10, 4,
+        4, 10, 12, 14, 14, 12, 10, 4,
+        20, 20, 20, 20, 20, 20, 20, 20,
+        20, 20, 20, 20, 20, 20, 20, 20
+        ]
+        self.val_cases_fou_blanc = [
+        0,4,4,4,4,4,4,0,
+        4,8,8,8,8,8,8,4,
+        4,10,12,14,14,12,10,4,
+        4,12,12,14,14,12,12,4,
+        4,10,18,14,14,18,10,4,
+        4,14,14,14,14,14,14,4,
+        4,18,10,8,8,10,18,4,
+        8,2,2,2,2,2,2,8
+        ]
+        self.val_cases_fou_noir = [
+        8, 2, 2, 2, 2, 2, 2, 8,
+        4, 18, 10, 8, 8, 10, 18, 4,
+        4, 14, 14, 14, 14, 14, 14, 4,
+        4, 10, 18, 14, 14, 18, 10, 4,
+        4, 12, 12, 14, 14, 12, 12, 4,
+        4, 10, 12, 14, 14, 12, 10, 4,
+        4, 8, 8, 8, 8, 8, 8, 4,
+        0, 4, 4, 4, 4, 4, 4, 0
+        ]
+        self.val_cases_tour_blanc = [
+        10,10,10,10,10,10,10,10,
+        13,20,20,20,20,20,20,13,
+        0,6,6,6,6,6,6,0,
+        0,6,6,6,6,6,6,0,
+        0,6,6,6,6,6,6,0,
+        0,6,6,6,6,6,6,0,
+        0,6,6,6,6,6,6,0,
+        6,6,10,13,13,10,6,6
+        ]
+        self.val_cases_tour_noir = [
+        6, 6, 10, 13, 13, 10, 6, 6,
+        0, 6, 6, 6, 6, 6, 6, 0,
+        0, 6, 6, 6, 6, 6, 6, 0,
+        0, 6, 6, 6, 6, 6, 6, 0,
+        0, 6, 6, 6, 6, 6, 6, 0,
+        0, 6, 6, 6, 6, 6, 6, 0,
+        13, 20, 20, 20, 20, 20, 20, 13,
+        10, 10, 10, 10, 10, 10, 10, 10
+        ]
 
 
     # def move_piece(self,cmd):
@@ -491,6 +609,17 @@ class Board:
 
         if couleur == '':
             couleur = self.side2move
+         #### QUAND REVERSE????
+            #self.val_cases_fou.reverse()
+            #self.val_cases_dame.reverse()
+            #self.val_cases_roi.reverse()
+            #self.val_cases_pion.reverse()
+            #self.val_cases_cavalier.reverse()
+            #self.val_cases_tour.reverse()
+
+
+
+
 
         WhiteScore=0
         BlackScore=0
@@ -503,7 +632,7 @@ class Board:
         struct_pion_n = [0,0,0,0,0,0,0,0]
         pos_tour_b = [] #colonne tour
         pos_tour_n = [] #colonne tour
-
+        coeff = (((-0.5)/30)*self.ply + 1) #Coeff d'incidence pour le controle du centre (plus la partie avance moins on le prend en compte)
         # on regarde chaque cases de l'échequier
         for pos1,piece in enumerate(self.cases):
 
@@ -513,18 +642,36 @@ class Board:
             if(piece.couleur=='blanc'):
                 if piece.nom == "TOUR":
                     pos_tour_b.append(self.COL(pos1))
+                    WhiteScore += coeff*self.val_cases_tour_blanc[pos1]
                 if piece.nom == "FOU":
                     fou_b += 1
-                WhiteScore+=piece.valeur
+                    WhiteScore += coeff*self.val_cases_fou_blanc[pos1]
                 if piece.nom == 'PION':
                     struct_pion_b[self.COL(pos1)] += 1
+                    WhiteScore += coeff*self.val_cases_pion_blanc[pos1]
+                if piece.nom == 'ROI':
+                    WhiteScore += coeff*self.val_cases_roi_blanc[pos1]
+                if piece.nom == 'CAVALIER':
+                    WhiteScore += coeff*self.val_cases_cavalier_blanc[pos1]
+                if piece.nom == 'DAME':
+                    WhiteScore += coeff*self.val_cases_dame_blanc[pos1]
+                WhiteScore+=piece.valeur
             elif (piece.couleur=='noir'):
                 if piece.nom == "TOUR":
                     pos_tour_n.append(self.COL(pos1))
+                    BlackScore += coeff*self.val_cases_tour_noir[pos1]
                 if piece.nom == "FOU":
                     fou_n += 1
+                    BlackScore += coeff*self.val_cases_fou_noir[pos1]
                 if piece.nom == 'PION':
                     struct_pion_n[self.COL(pos1)] += 1
+                    BlackScore += coeff*self.val_cases_pion_noir[pos1]
+                if piece.nom == 'ROI':
+                    BlackScore += coeff*self.val_cases_roi_noir[pos1]
+                if piece.nom == 'CAVALIER':
+                    BlackScore += coeff*self.val_cases_cavalier_noir[pos1]
+                if piece.nom == 'DAME':
+                    BlackScore += coeff*self.val_cases_dame_noir[pos1]
                 # NB : here is for black piece or empty square
                 BlackScore+=piece.valeur
 
