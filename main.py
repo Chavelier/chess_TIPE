@@ -254,8 +254,8 @@ def gauche(evt):
 tk.bind_all('<KeyPress-Return>', button_push)
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
-tk.bind_all('<KeyPress-Control_L>', bot_play)
-# tk.bind_all('<Up>', bot_play)
+# tk.bind_all('<KeyPress-Control_L>', bot_play)
+tk.bind_all('<Up>', bot_play)
 tk.bind_all('<Right>', droite)
 tk.bind_all('<Left>', gauche)
 

@@ -1,5 +1,6 @@
 from piece import *
 import random
+from math import *
 
 # import os
 # from PIL import Image, ImageTk ## Importation des modules utiles dans PIL
@@ -842,15 +843,19 @@ class Board:
         return DIST(pos_roi_b,pos_roi_n)
 
     def dist_roi_centre(self,col):
-        if col = "blanc":
+        if col == "blanc":
             pos = self.pos_roi_b
         else:
             pos = self.pos_roi_n
 
-        
+        liste = [27,28,35,36]
+
+        return min(self.DIST(pos,27),self.DIST(pos,28),self.DIST(pos,35),self.DIST(pos,36))
+
+
 
     def dist_roi_bord(self,col):
-        edge_list = [0,1,2,3,4,5,6,7,8,15,16,23,24,31,32,39,40,47,48,55,56,57,60,61,62,63]
+        # edge_list = [0,1,2,3,4,5,6,7,8,15,16,23,24,31,32,39,40,47,48,55,56,57,60,61,62,63]
         if col == "blanc":
             d = self.pos_roi_b
         else:
@@ -869,6 +874,9 @@ class Board:
             couleur = self.side2move
 
         modifval = (((-0.5)/30)*self.ply + 1)
+
+        val_restB = 0 # pieces restantes blanches
+        val_restN = 0 # pieces restantes noires
 
         WhiteScore=0
         BlackScore=0
@@ -909,6 +917,8 @@ class Board:
                     struct_pion_b[self.COL(pos1)] += 1
                     WhiteScore += modifval*self.pawnmap[pos1]
                 WhiteScore+=piece.valeur
+                if piece.nom != "PION":
+                    val_restB += piece.valeur
             elif (piece.couleur=='noir'):
                 if piece.nom == "TOUR":
                     pos_tour_n.append(self.COL(pos1))
@@ -931,6 +941,8 @@ class Board:
                     BlackScore += modifval*self.pawnmap[-1-pos1]
                 # NB : here is for black piece or empty square
                 BlackScore+=piece.valeur
+                if piece.nom != "PION":
+                    val_restN += piece.valeur
 
         #tours sur colonne ouvertes
         for col in pos_tour_b:
@@ -974,7 +986,16 @@ class Board:
             BlackScore += 60
 
         #finale
-
+        if val_restN >= 20:
+            finalmultB = 0
+        else:
+            finalmultB = 20 - val_restN
+        if val_restB >= 20:
+            finalmultN = 0
+        else:
+            finalmultN = 20 - val_restB
+        WhiteScore += (20*(4-self.dist_roi_centre("blanc")) + 40 * (4-self.dist_roi_bord("noir")))* finalmultB
+        BlackScore += (20*(4-self.dist_roi_centre("noir")) + 40 * (4-self.dist_roi_bord("blanc"))) * finalmultN
         #finale
 
 
