@@ -33,6 +33,8 @@ class Engine:
         self.noeuds = 0
         self.engine_move_list = [] #coups jouables par l'ordi au prochain move
         self.variation = []
+        #self.time1 = time.time()
+
 
 
     ####################################################################
@@ -169,6 +171,7 @@ class Engine:
 
     ####################################################################
     def play_bot(self,b):
+
         if(self.endgame) or self.is_nulle_rep(b): # on ne peut pas chercher si la partie est finie
             self.print_result(b)
             return
@@ -187,7 +190,7 @@ class Engine:
 
     def search(self,b):
         """cherche le meilleur coup du joueur qui joue dans l'échéquier 'b'"""
-        t1 = time.time()
+        self.time1 = time.time()
         self.clear_pv() # on efface l'ancien arbre des variations
         self.nodes=0
         b.ply=0
@@ -221,7 +224,7 @@ class Engine:
         self.add_nulle(b) #ajoute la position a la liste des coups joués
         self.print_result(b)
 
-        print("temps d'execution : %s ms \n"%((time.time() - t1)*1000))
+        print("temps d'execution : %s s \n"%((time.time() - self.time1)))
 
     ####################################################################
 
@@ -284,7 +287,7 @@ class Engine:
 
             if self.is_nulle_rep(b):
                 score = 0 - b.evaluer()
-            elif Tdepth >= depth:
+            elif Tdepth > depth or depth == 0:
                 score = Teval
                 depth = Tdepth
             else:

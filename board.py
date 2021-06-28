@@ -49,7 +49,7 @@ class Board:
     0,6,6,6,6,6,6,0,
     0,6,6,6,6,6,6,0,
     0,6,6,6,6,6,6,0,
-    6,6,10,13,13,10,6,6
+    6,5,10,13,13,10,5,6
     ]
     pawnmap = [
     20,20,20,20,20,20,20,20,
@@ -109,7 +109,8 @@ class Board:
         self.pos_roi_b = 60
         self.pos_roi_n = 4
 
-
+        self.roqueB = False
+        self.roqueN = False
 
         # droit de roque
         self.white_can_castle_56=True
@@ -355,10 +356,12 @@ class Board:
 
                     # si on avait fait un mouvement de roque alors on bouge la TOUR
                     if(arrivee==58):
+                        self.roqueB = True
                         self.cases[56]=Piece()
                         self.cases[59]=Piece('TOUR','blanc')
 
                     elif(arrivee==62):
+                        self.roqueB = True
                         self.cases[63]=Piece()
                         self.cases[61]=Piece('TOUR','blanc')
 
@@ -370,10 +373,12 @@ class Board:
                     self.black_can_castle_7=False
 
                     if(arrivee==6):
+                        self.roqueN = True
                         self.cases[7]=Piece()
                         self.cases[5]=Piece('TOUR','noir')
 
                     elif(arrivee==2):
+                        self.roqueN = True
                         self.cases[0]=Piece()
                         self.cases[3]=Piece('TOUR','noir')
 
@@ -480,9 +485,11 @@ class Board:
                 if(pos1==60):
                     # si c'était un roque on replace la TOUR
                     if(pos2==58):
+                        self.roqueB = False
                         self.cases[56]=Piece('TOUR','blanc')
                         self.cases[59]=Piece()
                     elif(pos2==62):
+                        self.roqueB = False
                         self.cases[63]=Piece('TOUR','blanc')
                         self.cases[61]=Piece()
             # ROI noir
@@ -490,9 +497,11 @@ class Board:
                 self.pos_roi_n = pos1
                 if(pos1==4):
                     if(pos2==2):
+                        self.roqueN = False
                         self.cases[0]=Piece('TOUR','noir')
                         self.cases[3]=Piece()
                     elif(pos2==6):
+                        self.roqueN = False
                         self.cases[7]=Piece('TOUR','noir')
                         self.cases[5]=Piece()
 
@@ -575,122 +584,6 @@ class Board:
             return
 
         return self.coord[i]
-
-    ####################################################################
-
-    def evaluer(self,couleur=''):
-        """Fonction d'évaluation d'une position"""
-
-        if couleur == '':
-            couleur = self.side2move
-
-        modifval = (((-0.5)/30)*self.ply + 1)
-
-        WhiteScore=0
-        BlackScore=0
-
-        fou_b = 0
-        fou_n = 0
-
-        #structures des pions sur les colonnes
-        struct_pion_b = [0,0,0,0,0,0,0,0]
-        struct_pion_n = [0,0,0,0,0,0,0,0]
-        pos_tour_b = [] #colonne tour
-        pos_tour_n = [] #colonne tour
-
-        # on regarde chaque cases de l'échequier
-        for pos1,piece in enumerate(self.cases):
-
-            # case_c = int(self.is_attacked(pos1,'blanc')) - int(self.is_attacked(pos1,'noir'))
-            # WhiteScore += 5*case_c
-            # Material score
-            if(piece.couleur=='blanc'):
-                if piece.nom == "TOUR":
-                    pos_tour_b.append(self.COL(pos1))
-                    WhiteScore += modifval*self.rookmap[pos1]
-                elif piece.nom == "FOU":
-                    fou_b += 1
-                    if pos1 != 58 and pos1 != 61:
-                        WhiteScore += 10
-                    WhiteScore += modifval*self.bishopmap[pos1]
-                elif piece.nom == "CAVALIER":
-                    if pos1 != 57 and pos1 != 62:
-                        WhiteScore += 10
-                    WhiteScore += modifval*self.knightmap[pos1]
-                elif piece.nom == "DAME":
-                    WhiteScore += modifval*self.queenmap[pos1]
-                elif piece.nom == "ROI":
-                    WhiteScore += modifval*self.kingmap[pos1]
-                elif piece.nom == "PION":
-                    struct_pion_b[self.COL(pos1)] += 1
-                    WhiteScore += modifval*self.pawnmap[pos1]
-                WhiteScore+=piece.valeur
-            elif (piece.couleur=='noir'):
-                if piece.nom == "TOUR":
-                    pos_tour_n.append(self.COL(pos1))
-                    BlackScore += modifval*self.rookmap[-1-pos1]
-                elif piece.nom == "FOU":
-                    fou_n += 1
-                    if pos1 != 2 and pos1 != 5:
-                        BlackScore += 10
-                    BlackScore += modifval*self.bishopmap[-1-pos1]
-                elif piece.nom == "CAVALIER":
-                    if pos1 != 1 and pos1 != 6:
-                        BlackScore += 10
-                    BlackScore += modifval*self.knightmap[-1-pos1]
-                elif piece.nom == "DAME":
-                    BlackScore += modifval*self.queenmap[-1-pos1]
-                elif piece.nom == "ROI":
-                    BlackScore += modifval*self.kingmap[-1-pos1]
-                elif piece.nom == "PION":
-                    struct_pion_n[self.COL(pos1)] += 1
-                    BlackScore += modifval*self.pawnmap[-1-pos1]
-                # NB : here is for black piece or empty square
-                BlackScore+=piece.valeur
-
-        #tours sur colonne ouvertes
-        for col in pos_tour_b:
-            if struct_pion_b[col] == 0:
-                WhiteScore += 50
-        for col in pos_tour_n:
-            if struct_pion_n[col] == 0:
-                BlackScore += 50
-
-        #roi sur colonne ouverte
-        if struct_pion_b[self.COL(self.pos_roi_b)] == 0:
-            WhiteScore -= 150
-        if struct_pion_n[self.COL(self.pos_roi_n)] == 0:
-            BlackScore -= 150
-
-        #pions isolés
-        sep1 = [-1]
-        sep2 = [-1]
-        for i in range(8):
-            if struct_pion_b[i] == 0:
-                sep1.append(i)
-            if struct_pion_n[i] == 0:
-                sep2.append(i)
-        for i in range(1,len(sep1)):
-            ilot = struct_pion_b[sep1[i-1]+1 : sep1[i]]
-            if len(ilot) == 1:
-                WhiteScore -= 40*ilot[0]
-        for i in range(1,len(sep2)):
-            ilot = struct_pion_n[sep2[i-1]+1 : sep2[i]]
-            if len(ilot) == 1:
-                BlackScore -= 40*ilot[0]
-
-
-
-        if fou_b >= 2:
-            WhiteScore += 60
-        if fou_n >= 2:
-            BlackScore += 60
-
-        if(couleur=='blanc'):
-            return WhiteScore-BlackScore
-        else:
-            return BlackScore-WhiteScore
-
 
     ####################################################################
 
@@ -943,6 +836,153 @@ class Board:
 
         return s
 
+    ####################################################################
+
+    def dist_roi(self):
+        return DIST(pos_roi_b,pos_roi_n)
+
+    def dist_roi_centre(self,col):
+        if col = "blanc":
+            pos = self.pos_roi_b
+        else:
+            pos = self.pos_roi_n
+
+        
+
+    def dist_roi_bord(self,col):
+        edge_list = [0,1,2,3,4,5,6,7,8,15,16,23,24,31,32,39,40,47,48,55,56,57,60,61,62,63]
+        if col == "blanc":
+            d = self.pos_roi_b
+        else:
+            d = self.pos_roi_n
+        row = self.ROW(d) ; col = self.COL(d)
+        cnorm = min(col,7-col) ; rnorm = min(row,7-row)
+
+        return min(cnorm,rnorm)
+
+    ####################################################################
+
+    def evaluer(self,couleur=''):
+        """Fonction d'évaluation d'une position"""
+
+        if couleur == '':
+            couleur = self.side2move
+
+        modifval = (((-0.5)/30)*self.ply + 1)
+
+        WhiteScore=0
+        BlackScore=0
+
+        fou_b = 0
+        fou_n = 0
+
+        #structures des pions sur les colonnes
+        struct_pion_b = [0,0,0,0,0,0,0,0]
+        struct_pion_n = [0,0,0,0,0,0,0,0]
+        pos_tour_b = [] #colonne tour
+        pos_tour_n = [] #colonne tour
+
+        # on regarde chaque cases de l'échequier
+        for pos1,piece in enumerate(self.cases):
+
+            # case_c = int(self.is_attacked(pos1,'blanc')) - int(self.is_attacked(pos1,'noir'))
+            # WhiteScore += 5*case_c
+            # Material score
+            if(piece.couleur=='blanc'):
+                if piece.nom == "TOUR":
+                    pos_tour_b.append(self.COL(pos1))
+                    WhiteScore += modifval*self.rookmap[pos1]
+                elif piece.nom == "FOU":
+                    fou_b += 1
+                    if pos1 != 58 and pos1 != 61: #developpement
+                        WhiteScore += 20
+                    WhiteScore += modifval*self.bishopmap[pos1]
+                elif piece.nom == "CAVALIER":
+                    if pos1 != 57 and pos1 != 62: #developpement
+                        WhiteScore += 20
+                    WhiteScore += modifval*self.knightmap[pos1]
+                elif piece.nom == "DAME":
+                    WhiteScore += modifval*self.queenmap[pos1]
+                elif piece.nom == "ROI":
+                    WhiteScore += modifval*self.kingmap[pos1]
+                elif piece.nom == "PION":
+                    struct_pion_b[self.COL(pos1)] += 1
+                    WhiteScore += modifval*self.pawnmap[pos1]
+                WhiteScore+=piece.valeur
+            elif (piece.couleur=='noir'):
+                if piece.nom == "TOUR":
+                    pos_tour_n.append(self.COL(pos1))
+                    BlackScore += modifval*self.rookmap[-1-pos1]
+                elif piece.nom == "FOU":
+                    fou_n += 1
+                    if pos1 != 2 and pos1 != 5: #developpement
+                        BlackScore += 20
+                    BlackScore += modifval*self.bishopmap[-1-pos1]
+                elif piece.nom == "CAVALIER":
+                    if pos1 != 1 and pos1 != 6: #developpement
+                        BlackScore += 20
+                    BlackScore += modifval*self.knightmap[-1-pos1]
+                elif piece.nom == "DAME":
+                    BlackScore += modifval*self.queenmap[-1-pos1]
+                elif piece.nom == "ROI":
+                    BlackScore += modifval*self.kingmap[-1-pos1]
+                elif piece.nom == "PION":
+                    struct_pion_n[self.COL(pos1)] += 1
+                    BlackScore += modifval*self.pawnmap[-1-pos1]
+                # NB : here is for black piece or empty square
+                BlackScore+=piece.valeur
+
+        #tours sur colonne ouvertes
+        for col in pos_tour_b:
+            if struct_pion_b[col] == 0:
+                WhiteScore += 50
+        for col in pos_tour_n:
+            if struct_pion_n[col] == 0:
+                BlackScore += 50
+
+        #roi sur colonne ouverte
+        if struct_pion_b[self.COL(self.pos_roi_b)] == 0:
+            WhiteScore -= 150
+        if struct_pion_n[self.COL(self.pos_roi_n)] == 0:
+            BlackScore -= 150
+
+        #pions isolés
+        sep1 = [-1]
+        sep2 = [-1]
+        for i in range(8):
+            if struct_pion_b[i] == 0:
+                sep1.append(i)
+            if struct_pion_n[i] == 0:
+                sep2.append(i)
+        for i in range(1,len(sep1)):
+            ilot = struct_pion_b[sep1[i-1]+1 : sep1[i]]
+            if len(ilot) == 1:
+                WhiteScore -= 40*ilot[0]
+        for i in range(1,len(sep2)):
+            ilot = struct_pion_n[sep2[i-1]+1 : sep2[i]]
+            if len(ilot) == 1:
+                BlackScore -= 40*ilot[0]
+
+        if self.roqueB:
+            WhiteScore += 80
+        if self.roqueN:
+            BlackScore += 80
+
+        if fou_b >= 2:
+            WhiteScore += 60
+        if fou_n >= 2:
+            BlackScore += 60
+
+        #finale
+
+        #finale
+
+
+        if(couleur=='blanc'):
+            return WhiteScore-BlackScore
+        else:
+            return BlackScore-WhiteScore
+
 
 ##########################################################################
 
@@ -955,3 +995,11 @@ class Board:
     def COL(x):
         """Renvoi le numéro de colonne (0 à 7) de la case 'x'"""
         return (x & 7) # x & y Fait un "et au niveau du bit". Chaque bit de sortie est 1 si le bit correspondant de x ET de y est 1, sinon il est 0.
+
+    @staticmethod
+    def DIST(pos1,pos2):
+        """Renvoi la distance entre les cases pos1 et pos2 de l'échéquier"""
+        x1 = pos1&7 ; y1 = pos1>>3
+        x2 = pos2&7 ; y2 = pos2>>3
+
+        return max(abs(x1 - x2), abs(y1 - y2)) # distance de Tchebychev

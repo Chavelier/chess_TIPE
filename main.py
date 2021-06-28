@@ -9,12 +9,14 @@ tk = Tk()
 tk.title("Chess")
 tk.resizable(width=False,height=False)
 tk.maxsize(2000,1000)
+# auto_play = False
 
 canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 txt = StringVar()
 tabl = Label(tk,textvariable=txt)
 
 reverse_mode = False
+black_mode = False
 B = Board() #création échéquier
 E = Engine() #creation engine
 
@@ -44,7 +46,7 @@ def affiche_position(l=[]):
             if (i+j)%2 == 0: col = '#f6f6f6'
             else: col = '#5d8daa'
 
-            if reverse_mode and B.side2move == "noir":
+            if (reverse_mode and B.side2move == "noir") or black_mode:
                 nb_id = j+1
                 ltr_id = 72-i
                 case_id = 63-(i+8*j)
@@ -78,7 +80,7 @@ def affiche_position(l=[]):
                 imglist += [""]
     if l != []: #gestion affichage coups possibles
         for pos in l:
-            if reverse_mode and B.side2move == "noir":
+            if (reverse_mode and B.side2move == "noir") or black_mode:
                 posx = 7-B.COL(pos)
                 posy = 7-B.ROW(pos)
             else:
@@ -91,6 +93,10 @@ affiche_position()
 def execute_cmd():
     cmd= cmd_bar.get()
 
+    global reverse_mode
+    global black_mode
+
+
     if cmd == "new":
         E.newgame(B)
         E.add_nulle(B)
@@ -102,9 +108,9 @@ def execute_cmd():
         print(E.epsilon)
         for i in range(E.epsilon):
             d = 1
-
-    elif cmd == "ieps":
-        E.distrib_proba(B)
+    # elif cmd == "auto":
+    #     auto_play = not auto_play
+    #     print("coups automatiques après le joueur : %s"%auto_play)
     elif cmd == "go":
         E.play_bot(B)
     # elif "gog" in cmd:
@@ -138,11 +144,21 @@ def execute_cmd():
     elif cmd == 'transpo':
         E.use_table = not E.use_table
         print("table de transposition : %s"%E.use_table)
+    elif cmd == "black":
+        reverse_mode = False
+        black_mode = not black_mode
+        print("Black mode : %s"%black_mode)
     elif cmd == "reverse":
-        global reverse_mode
+        black_mode = False
         reverse_mode = not reverse_mode
         print("Reverse mode : %s"%reverse_mode)
-
+    elif cmd == "dist_edge":
+        print("distance du roi blanc au bord : %s"%B.dist_roi_bord("blanc"))
+    elif "dist" in cmd:
+        l = cmd.split()
+        x = B.caseStr2Int(l[1])
+        y = B.caseStr2Int(l[2])
+        print("distance entre les cases {} et {} : {}".format(l[1],l[2],B.DIST(x,y)))
     elif 'sd' in cmd:
         E.setDepth(cmd)
     elif 'perft' in cmd:
@@ -155,7 +171,7 @@ def execute_cmd():
 
 
     affiche_position()
-    # txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
+    #txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
     txt.set(str(B.pos_id))
     cmd_bar.delete(0,"end")
 
@@ -195,7 +211,7 @@ def on_click(evt):
     if -1<casex<8 and -1<casey<8:
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")
-        if reverse_mode and B.side2move == "noir":
+        if (reverse_mode and B.side2move == "noir") or black_mode:
             coord2case = 63-(casex+8*casey)
         else:
             coord2case = casex+8*casey
