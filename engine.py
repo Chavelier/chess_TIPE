@@ -23,8 +23,12 @@ class Engine:
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
         self.historique_lire = "" #historique littérale des coups pour la lecture d'une partie
 
+        self.use_op = True
+        self.book = "book.txt"
+
         self.transposition = {} #table des transpositions dictionnaire {id : (eval,profondeur)}
-        self.use_table = True
+        self.use_table = True #utiliser ou non la table
+        self.modultranspo = True #permet d'activer ou non la table en fonction du temps d'execution
 
         self.drawpos = {} #dictionnaire contenant les pos et le nombre de fois qu'une pos a été joué
 
@@ -177,7 +181,7 @@ class Engine:
             return
 
         coups = self.ouverture(b)
-        if coups != []:
+        if coups != [] and self.use_op:
             c = coups[random.randrange(0,len(coups))]
             print("Coup d'ouverture : "+c)
             b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
@@ -223,8 +227,13 @@ class Engine:
         b.domove(best[0],best[1],best[2])
         self.add_nulle(b) #ajoute la position a la liste des coups joués
         self.print_result(b)
+        exectime = time.time() - self.time1
 
-        print("temps d'execution : %s s \n"%((time.time() - self.time1)))
+        print("temps d'execution : %s s \n"%exectime)
+
+        if exectime >= 20 and self.modultranspo:
+            self.use_table = not self.use_table
+            print("la transposition est desormais en position : %s"%self.use_table)
 
     ####################################################################
 
@@ -344,7 +353,7 @@ class Engine:
         suite_coups = ""
         all_coups = [] #liste de tous les coups possibles
         nb_coup = len(b.history)
-        with open("book.txt",'rt') as ouvertures:
+        with open(self.book,'rt') as ouvertures:
             for i in range(nb_coup):
                 suite_coups += b.caseInt2Str(b.history[i][0]) + b.caseInt2Str(b.history[i][1]) + " "
             for ligne in ouvertures:
@@ -468,8 +477,8 @@ class Engine:
             print('Depth isn\'t an integer. Please type i.e. : sd 5')
             return
 
-        if(d<2 or d>self.MAX_PLY):
-            print('Depth must be between 2 and',self.MAX_PLY)
+        if(d<1 or d>self.MAX_PLY):
+            print('Depth must be between 1 and',self.MAX_PLY)
             return
 
         # Things seems to be all right

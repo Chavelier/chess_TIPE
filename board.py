@@ -101,6 +101,8 @@ class Board:
 
         self.histo = [] #historique des coups
 
+        self.evalmod = 1 #pour foutre la merde
+
         self.side2move='blanc'
         self.ep=-1 # la case ou l'on peut prendre en passant
         self.history=[] # historique des coups
@@ -998,11 +1000,11 @@ class Board:
         BlackScore += (20*(4-self.dist_roi_centre("noir")) + 40 * (4-self.dist_roi_bord("blanc"))) * finalmultN
         #finale
 
-
+        eval = WhiteScore-BlackScore
         if(couleur=='blanc'):
-            return WhiteScore-BlackScore
+            return self.evalmod * eval
         else:
-            return BlackScore-WhiteScore
+            return self.evalmod * eval * -1
 
 
 ##########################################################################

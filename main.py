@@ -11,6 +11,17 @@ tk.resizable(width=False,height=False)
 tk.maxsize(2000,1000)
 # auto_play = False
 
+#differentes IA
+bot_type = ['Singularity','ComeOS','Cortominator','HugoGo','BrugierDA']
+IAbutton = Menubutton(tk, text='IA', relief='raised')
+IAbutton.menu = Menu(IAbutton)
+user_choice = IntVar()
+file_menu = Menu(IAbutton, tearoff=0)
+for i in range(len(bot_type)):
+    S = file_menu.add_radiobutton(label=bot_type[i], variable=user_choice, value=i)
+IAbutton.config(menu=file_menu)
+lastbot = 0
+
 canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 txt = StringVar()
 tabl = Label(tk,textvariable=txt)
@@ -35,6 +46,27 @@ def affiche_position(l=[]):
     global imglist #besoin d'etre global sinon disparition des images
     imglist = []
 
+
+    # couleur des bots
+    bot_name = user_choice.get()
+    if bot_name == 0:
+        wcol = '#f6f6f6'
+        bcol = '#5d8daa'
+    elif bot_name == 1:
+        wcol = '#f6f6f6'
+        bcol = '#c531d4'
+    elif bot_name == 2:
+        wcol = '#f6f6f6'
+        bcol = '#449d43'
+    elif bot_name == 3:
+        wcol = '#f6f6f6'
+        bcol = '#69e1f1'
+    elif bot_name == 4:
+        wcol = '#c7df51'
+        bcol = '#f2f2a0'
+    # couleurs des bots
+
+
     mrgx = 40
     mrgy = 40
     cell = 80
@@ -43,8 +75,8 @@ def affiche_position(l=[]):
     liste=os.listdir(folderName) # =>recupere le nom de tous les fichiers d'un dossier
     for j in range(8):
         for i in range(8):
-            if (i+j)%2 == 0: col = '#f6f6f6'
-            else: col = '#5d8daa'
+            if (i+j)%2 == 0: col = wcol
+            else: col = bcol
 
             if (reverse_mode and B.side2move == "noir") or black_mode:
                 nb_id = j+1
@@ -98,6 +130,7 @@ def execute_cmd():
 
 
     if cmd == "new":
+        user_choice.set(0)
         E.newgame(B)
         E.add_nulle(B)
     elif cmd == "quit":
@@ -199,6 +232,44 @@ def show_proba(E):
     plt.show()
 
 
+def bot_setting(name):
+    if name == 0:
+        E.setDepth("sd 4")
+        E.use_table = True
+        E.modultranspo = True
+        E.use_op = True
+        E.book = "book.txt"
+        B.evalmod = 1
+    elif name == 1:
+        E.setDepth("sd 1")
+        E.use_table = False
+        E.modultranspo = False
+        E.use_op = False
+        E.book = "book.txt"
+        B.evalmod = 1
+    elif name == 2:
+        E.setDepth("sd 4")
+        E.use_table = True
+        E.modultranspo = False
+        E.use_op = True
+        E.book = "cortobook.txt"
+        B.evalmod = 1
+    elif name == 3:
+        E.setDepth("sd 4")
+        E.use_table = False
+        E.modultranspo = False
+        E.use_op = True
+        E.book = "book.txt"
+        B.evalmod = 1
+    elif name == 4:
+        E.setDepth("sd 2")
+        E.use_table = True
+        E.modultranspo = False
+        E.use_op = False
+        E.book = "book.txt"
+        B.evalmod = -1
+
+
 
 # gestion des touches ----------------------------------------------------------
 
@@ -206,6 +277,15 @@ def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     execute_cmd()
 
 def on_click(evt):
+
+    global lastbot
+
+    bot_name = user_choice.get()
+    # print(bot_name,lastbot)
+    if bot_name != lastbot:
+        lastbot = bot_name
+        bot_setting(bot_name)
+
     casex = (evt.x-40)//80
     casey = (evt.y-40)//80
     if -1<casex<8 and -1<casey<8:
@@ -223,8 +303,13 @@ def on_click(evt):
             liste = B.gen_moves_list()
             l2=[]
             for i in range(len(liste)):
-                if liste[i][0] == B.caseStr2Int(cmd_bar.get()):
-                    l2 += [liste[i][1]]
+                pos1 = liste[i][0]
+                pos2 = liste[i][1]
+                if pos1 == B.caseStr2Int(cmd_bar.get()):
+                    if(not B.domove(pos1,pos2,liste[i][2])):
+                        continue
+                    B.undomove()
+                    l2 += [pos2]
             if l2 != []:
                 affiche_position(l2)
             else:
@@ -264,11 +349,12 @@ cmd_bar = Entry(box)
 btn = Button(box, text='ENTRER', command=button_push)
 
 
-
 #Pack()
+IAbutton.pack()
+IAbutton.place(relx=0, x=0, y=0, anchor=NW)
 box.pack(expand=YES)
-cmd_bar.grid(row=0, column=0, sticky=W)
-btn.grid(row=0, column=1, sticky=W)
+cmd_bar.grid(row=0, column=1, sticky=W)
+btn.grid(row=0, column=2, sticky=W,)
 canvas.pack()
 tabl.pack()
 #Pack()
