@@ -875,7 +875,7 @@ class Board:
         if couleur == '':
             couleur = self.side2move
 
-        modifval = (((-0.5)/30)*self.ply + 1)
+        modifval = min((((-0.5)/30)*self.ply + 1),0)
 
         val_restB = 0 # pieces restantes blanches
         val_restN = 0 # pieces restantes noires
