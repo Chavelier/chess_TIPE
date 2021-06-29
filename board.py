@@ -838,6 +838,20 @@ class Board:
         return s
 
     ####################################################################
+    def nulle_mat(self):
+        valB = 0
+        valN = 0
+        for p in self.cases:
+            if p.nom == "PION":
+                return False
+            elif p.couleur == "blanc":
+                valB += p.valeur
+            else:
+                valN += p.valeur
+        return (valB <= 300) and (valN <= 300)
+
+
+    ####################################################################
 
     def dist_roi(self):
         return DIST(pos_roi_b,pos_roi_n)
@@ -873,10 +887,10 @@ class Board:
         if couleur == '':
             couleur = self.side2move
 
-        modifval = (((-0.5)/30)*self.ply + 1)
+        modifval = max(0,((-0.5)/30)*self.ply + 1)
 
-        val_restB = 0 # pieces restantes blanches
-        val_restN = 0 # pieces restantes noires
+        val_restB = 0 # pieces restantes blanches sauf pions
+        val_restN = 0 # pieces restantes noires sauf pions
 
         WhiteScore=0
         BlackScore=0
@@ -917,7 +931,7 @@ class Board:
                     struct_pion_b[self.COL(pos1)] += 1
                     WhiteScore += modifval*self.pawnmap[pos1]
                 WhiteScore+=piece.valeur
-                if piece.nom != "PION":
+                if piece.nom != "PION": #piece vide et roi val = 0
                     val_restB += piece.valeur
             elif (piece.couleur=='noir'):
                 if piece.nom == "TOUR":
@@ -986,16 +1000,17 @@ class Board:
             BlackScore += 60
 
         #finale
-        if val_restN >= 20:
+        if val_restN >= 2000:
             finalmultB = 0
         else:
-            finalmultB = 20 - val_restN
-        if val_restB >= 20:
+            finalmultB = 2000 - val_restN
+            # print("en finale")
+        if val_restB >= 2000:
             finalmultN = 0
         else:
             finalmultN = 20 - val_restB
-        WhiteScore += (20*(4-self.dist_roi_centre("blanc")) + 40 * (4-self.dist_roi_bord("noir")))* finalmultB
-        BlackScore += (20*(4-self.dist_roi_centre("noir")) + 40 * (4-self.dist_roi_bord("blanc"))) * finalmultN
+        WhiteScore += (0.2*(4-self.dist_roi_centre("blanc")) + 0.4 * (4-self.dist_roi_bord("noir")))* finalmultB
+        BlackScore += (0.2*(4-self.dist_roi_centre("noir")) + 0.4 * (4-self.dist_roi_bord("blanc"))) * finalmultN
         #finale
 
 
