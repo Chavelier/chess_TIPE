@@ -303,13 +303,12 @@ def on_click(evt):
             liste = B.gen_moves_list()
             l2=[]
             for i in range(len(liste)):
-                pos1 = liste[i][0]
-                pos2 = liste[i][1]
-                if pos1 == B.caseStr2Int(cmd_bar.get()):
-                    if(not B.domove(pos1,pos2,liste[i][2])):
+                l = liste[i]
+                if l[0] == B.caseStr2Int(cmd_bar.get()):
+                    if not B.domove(l[0],l[1],l[2]):
                         continue
                     B.undomove()
-                    l2 += [pos2]
+                    l2 += [l[1]]
             if l2 != []:
                 affiche_position(l2)
             else:

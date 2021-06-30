@@ -48,7 +48,7 @@ class Engine:
         L'argument 'b' est l'echequier.
         """
 
-        if(self.endgame) or self.is_nulle_rep(b):
+        if(self.endgame) or self.is_nulle_rep(b) or self.is_nulle_mat(b):
             self.print_result(b)
             return
 
@@ -240,6 +240,10 @@ class Engine:
     def alphabeta(self,depth,alpha,beta,b):
         key = b.pos_id
         alatable = (key in self.transposition and self.use_table)
+
+        if self.is_nulle_rep(b) or self.is_nulle_mat(b):
+            return 0 #- b.evaluer()
+
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
             if alatable:
@@ -294,9 +298,7 @@ class Engine:
             if alatable:
                 Teval , Tdepth = self.transposition[key]
 
-            if self.is_nulle_rep(b):
-                score = 0 - b.evaluer()
-            elif Tdepth > depth or depth == 0:
+            if Tdepth > depth or depth == 0:
                 score = Teval
                 depth = Tdepth
             else:
@@ -392,9 +394,11 @@ class Engine:
         if self.is_nulle_rep(b):
             self.endgame=True
             print("1/2-1/2 - Nulle par répétition")
+        if self.is_nulle_mat(b):
+            self.endgame=True
+            print("1/2-1/2 - Nulle par manque de materiel")
 
         # TODO
-        # 3 reps
         # 50 moves rule
 
     ####################################################################
@@ -443,6 +447,8 @@ class Engine:
             if self.drawpos[p] >= 3:
                 return True
         return False
+    def is_nulle_mat(self,b):
+        return b.nulle_mat()
 
 
 
