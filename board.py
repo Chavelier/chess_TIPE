@@ -121,7 +121,7 @@ class Board:
         self.black_can_castle_0=True
         self.black_can_castle_7=True
 
-        self.hash = [random.getrandbits(64) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
+        self.hash = [random.getrandbits(256) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
         self.pos_id = self.create_pos_id()
 
 
@@ -1010,7 +1010,7 @@ class Board:
         if val_restB >= 2000:
             finalmultN = 0
         else:
-            finalmultN = 20 - val_restB
+            finalmultN = 2000 - val_restB
         WhiteScore += (0.2*(4-self.dist_roi_centre("blanc")) + 0.4 * (4-self.dist_roi_bord("noir")))* finalmultB
         BlackScore += (0.2*(4-self.dist_roi_centre("noir")) + 0.4 * (4-self.dist_roi_bord("blanc"))) * finalmultN
         #finale

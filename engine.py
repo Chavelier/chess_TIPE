@@ -278,7 +278,7 @@ class Engine:
         # Ici, j'imagine qu'on randomise la liste des coups possibles pour ne pas avoir
         # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
         # random.shuffle(mList)
-        mList=b.tri_move(mList)
+        # mList=b.tri_move(mList)
 
 
         f=False # flag to know if at least one move will be done
@@ -298,12 +298,12 @@ class Engine:
             if alatable:
                 Teval , Tdepth = self.transposition[key]
 
-            if Tdepth > depth or depth == 0:
+            if Tdepth >= depth:
                 score = Teval
                 depth = Tdepth
             else:
                 score=-self.alphabeta(depth-1,-beta,-alpha,b)
-
+            # score=-self.alphabeta(depth-1,-beta,-alpha,b)
             #On fait machine arrière
             self.del_nulle(b)
             b.undomove()
