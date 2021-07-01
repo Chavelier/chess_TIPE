@@ -1021,7 +1021,6 @@ class Board:
         else:
             return self.evalmod * eval * -1
 
-
 ##########################################################################
 
     @staticmethod #fonction attaché à la classe ne pouvant pas utiliser les variables self dépendant de l'objet créé
