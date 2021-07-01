@@ -289,12 +289,12 @@ class Engine:
             if alatable:
                 Teval , Tdepth = self.transposition[key]
 
-            if Tdepth > depth or depth == 0:
+            if Tdepth >= depth:
                 score = Teval
                 depth = Tdepth
             else:
                 score=-self.alphabeta(depth-1,-beta,-alpha,b)
-
+            # score=-self.alphabeta(depth-1,-beta,-alpha,b)
             #On fait machine arrière
             self.del_nulle(b)
             b.undomove()

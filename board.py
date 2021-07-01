@@ -1019,7 +1019,6 @@ class Board:
         else:
             return BlackScore-WhiteScore
 
-
 ##########################################################################
 
     @staticmethod #fonction attaché à la classe ne pouvant pas utiliser les variables self dépendant de l'objet créé
