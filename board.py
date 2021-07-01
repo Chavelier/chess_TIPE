@@ -119,7 +119,7 @@ class Board:
         self.black_can_castle_0=True
         self.black_can_castle_7=True
 
-        self.hash = [random.getrandbits(64) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
+        self.hash = [random.getrandbits(256) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
         self.pos_id = self.create_pos_id()
 
 

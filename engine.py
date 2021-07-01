@@ -197,26 +197,22 @@ class Engine:
 
         print("Profondeur\tNoeuds\tScore\tPrincipale variation")
 
-        for i in range(1,self.init_depth+1):
+        # for i in range(1,self.init_depth+1):
 
-            score=self.alphabeta(i,-self.INFINITY,self.INFINITY,b)
+        score=self.alphabeta(self.init_depth,-self.INFINITY,self.INFINITY,b)
 
 
-            print("{}\t\t{}\t{}\t".format(i,self.nodes,score/100),end='')
+        print("{}\t\t{}\t{}\t".format(self.init_depth,self.nodes,score/100),end='')
 
-            #Affichage des infos
-            j=0
-            while(self.pv[j][j]!=0):
-                c=self.pv[j][j]
-                pos1=b.caseInt2Str(c[0])
-                pos2=b.caseInt2Str(c[1])
-                print("{}{}{}".format(pos1,pos2,c[2]),end=' ')
-                j+=1
-            print()
-
-            # Break si on trouve un mat
-            if(score>self.INFINITY-100 or score<-self.INFINITY+100):
-                break
+        #Affichage des infos
+        j=0
+        while(self.pv[j][j]!=0):
+            c=self.pv[j][j]
+            pos1=b.caseInt2Str(c[0])
+            pos2=b.caseInt2Str(c[1])
+            print("{}{}{}".format(pos1,pos2,c[2]),end=' ')
+            j+=1
+        print()
 
         #le meilleur coup correspond au premier élement de la dernière variation
         best=self.pv[0][0]
@@ -269,10 +265,10 @@ class Engine:
         # Ici, j'imagine qu'on randomise la liste des coups possibles pour ne pas avoir
         # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
         # random.shuffle(mList)
-        mList=b.tri_move(mList)
+        # mList=b.tri_move(mList)
 
 
-        f=False # flag to know if at least one move will be done
+        f=False # pour savoir si un coup est joué
         for i,m in enumerate(mList):
 
             # Fais le coup 'c'.
