@@ -1,7 +1,8 @@
 from piece import *
 import random
 import time
-
+import pygame
+pygame.mixer.init()
 
 class Engine:
     """l'intelligence artificielle"""
@@ -22,18 +23,40 @@ class Engine:
         self.clear_pv() #arbre de variation
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
+<<<<<<< Updated upstream
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
         self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
         self.transposition = [] #table des transpositions liste de liste [id,eval,profondeur]
+=======
+        self.historique_lire = "" #historique littérale des coups pour la lecture d'une partie
+        self.mode_lecture = False #précise qu'on lit une partie
 
-        self.epsilon = []
+        self.drawpos = {} #dictionnaire contenant les pos et le nombre de fois qu'une pos a été joué
+>>>>>>> Stashed changes
+
 
         self.noeuds = 0
         self.engine_move_list = [] #coups jouables par l'ordi au prochain move
         self.variation = []
+<<<<<<< Updated upstream
 
 
+=======
+        #self.time1 = time.time()
+        self.startsound = pygame.mixer.Sound("soundesign\start.wav")
+        self.checkmatesound = pygame.mixer.Sound("soundesign\checkmatesound.wav")
+        self.casltingsound1 = pygame.mixer.Sound("soundesign\casltingsound1.wav")
+        self.casltingsound2 = pygame.mixer.Sound("soundesign\casltingsound2.wav")
+        self.checksound1 = pygame.mixer.Sound("soundesign\checksound1.wav")
+        self.checksound2 = pygame.mixer.Sound("soundesign\checksound2.wav")
+        self.drawsound = pygame.mixer.Sound("soundesign\drawsound.wav")
+        self.capturesound1 = pygame.mixer.Sound("soundesign\capturesound1.wav")
+        self.capturesound2 = pygame.mixer.Sound("soundesign\capturesound1.wav")
+        self.playsound1 = pygame.mixer.Sound("soundesign\playsound1.wav")
+        self.playsound2 = pygame.mixer.Sound("soundesign\playsound2.wav")
+        self.cantsound = pygame.mixer.Sound("soundesign\cantsound.wav")
+>>>>>>> Stashed changes
 
     ####################################################################
 
@@ -42,7 +65,7 @@ class Engine:
         L'argument 'b' est l'echequier.
         """
 
-        if(self.endgame) or self.is_nulle_rep(b):
+        if(self.endgame):
             self.print_result(b)
             return
 
@@ -77,9 +100,10 @@ class Engine:
         if(((pos1,pos2,promote) not in mList) or \
         (b.domove(pos1,pos2,promote)==False)):
             print("\n"+'Le coup '+c+' ''n\'est pas possible, ou laisse le roi en échec.'+"\n")
+            self.cantsound.play()
             return
-        self.add_nulle(b)
         self.print_result(b)
+        self.playsound(b)
 
         # Let the engine play
         #self.search(b)
@@ -169,7 +193,12 @@ class Engine:
 
     ####################################################################
     def play_bot(self,b):
+<<<<<<< Updated upstream
         if(self.endgame) or self.is_nulle_rep(b): # on ne peut pas chercher si la partie est finie
+=======
+
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
+>>>>>>> Stashed changes
             self.print_result(b)
             return
 
@@ -178,8 +207,7 @@ class Engine:
             c = coups[random.randrange(0,len(coups))]
             print("Coup d'ouverture : "+c)
             b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
-
-            self.add_nulle(b) #ajoute la position a la liste des coups joués
+            self.playsound(b)
         else:
             self.search(b)
 
@@ -218,12 +246,13 @@ class Engine:
         #le meilleur coup correspond au premier élement de la dernière variation
         best=self.pv[0][0]
         b.domove(best[0],best[1],best[2])
-        self.add_nulle(b) #ajoute la position a la liste des coups joués
         self.print_result(b)
+        self.playsound(b)
 
     ####################################################################
 
     def alphabeta(self,depth,alpha,beta,b):
+<<<<<<< Updated upstream
 
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
         if(depth==0):
@@ -236,6 +265,18 @@ class Engine:
         # Pour ne pas aller trop loin
         if(b.ply >= self.MAX_PLY-1):
             return b.evaluer()
+=======
+        # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
+        if(depth==0):
+            b.evaluer()
+            #TODO : return quiesce(alpha,beta) pour eviter un effet d'horizon !
+
+        # Pour ne pas aller trop loin
+        if(b.ply >= self.MAX_PLY-1):
+            val = b.evaluer()
+            return val
+
+>>>>>>> Stashed changes
 
         # Si le roi est en échec, on va plus loin dans l'analyse
         chk=b.in_check(b.side2move) # 'chk' used at the end of func too
@@ -250,6 +291,10 @@ class Engine:
         # Ici, j'imagine qu'on randomise la liste des coups possibles pour ne pas avoir
         # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
         random.shuffle(mList)
+<<<<<<< Updated upstream
+=======
+        #mList=b.tri_move(mList)
+>>>>>>> Stashed changes
 
 
         f=False # flag to know if at least one move will be done
@@ -264,10 +309,18 @@ class Engine:
 
             f=True #Le coup est passé
 
+<<<<<<< Updated upstream
             # self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
 
 
             score=-self.alphabeta(depth-1,-beta,-alpha,b)
+=======
+            depth = -1
+            if depth == 0:
+                score = b.evaluer()
+            else:
+                score=-self.alphabeta(depth-1,-beta,-alpha,b)
+>>>>>>> Stashed changes
 
             #On fait machine arrière
             b.undomove()
@@ -298,7 +351,10 @@ class Engine:
                 return 0 # DRAW
 
         #TODO : 50 moves rule
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         return alpha
 
     ####################################################################
@@ -321,8 +377,8 @@ class Engine:
 
     ####################################################################
     #Pour simplifier l'écriture, il faut définir deux variables
-    #La première : suite_coups est la suite de coup jouée pour le moment par l'ordinateur et par l'ordi sous forme de charactères
-    #La seconde : ligne_partielle est la chaine de charactères de la longueur exactes des coups joués
+    #La première : suite_coups est la suite de coup jouée pour le moment par le joueur et par l'ordi sous forme de caractères
+    #La seconde : ligne_partielle est la chaine de caractères de la longueur exactes des coups joués
 
     def ouverture(self,b):
         """renvoi la liste des coups jouables depuis la pos selon l'ouverture"""
@@ -337,7 +393,6 @@ class Engine:
                 ligne_partielle = ligne[0 : 5*nb_coup]
                 if suite_coups == ligne_partielle:
                     all_coups += [ligne[5*nb_coup : 5*nb_coup + 4]]
-
                 else :
                     ligne_partielle = ""
         return all_coups
@@ -360,15 +415,15 @@ class Engine:
             if(b.in_check(b.side2move)):
                 if(b.side2move=='blanc'):
                     print("0-1 - Victoire des Noirs")
+                    self.checkmatesound.play()
                 else:
+                    self.checkmatesound.play()
                     print("1-0 - Victoire des Blancs")
             else:
                 print("1/2-1/2 - Nulle par Pat")
+                self.drawsound.play()
             self.endgame=True
 
-        if self.is_nulle_rep(b):
-            self.endgame=True
-            print("1/2-1/2 - Nulle par répétition")
 
         # TODO
         # 3 reps
@@ -379,8 +434,6 @@ class Engine:
     def clear_pv(self):
         "Nettoie la 'table triangulaire' des principales variations contenant"
         "la ligne des meilleurs coups calculés"
-        "Cette ligne correpond-elle à l'équilibre de Nash des depth-ième sous jeux"
-        "en théorie des jeux?"
 
         self.pv=[[0 for x in range(self.MAX_PLY)] for x in range(self.MAX_PLY)]
 
@@ -403,6 +456,7 @@ class Engine:
 
 
     ###############################################################
+<<<<<<< Updated upstream
     def add_nulle(self,b):
         f = False
         for m in (self.listfen):
@@ -423,6 +477,8 @@ class Engine:
                     return True
         return False
 
+=======
+>>>>>>> Stashed changes
 
 
     def la_proba(self,b):
@@ -548,6 +604,7 @@ class Engine:
 
     def newgame(self,b):
 
+        self.startsound.play()
         self.init()
         b.init()
 
@@ -683,48 +740,48 @@ class Engine:
     #####################################################################
 
 
-    # def play_bot(self,val,b):
-    #     if(self.endgame): # on ne peut pas chercher si la partie est finie
-    #         self.print_result(b)
-    #         return
-    #
-    #     coups = self.ouverture(b)
-    #     if coups != []:
-    #         c = coups[random.randrange(0,len(coups))]
-    #         print("Coup d'ouverture : "+c)
-    #         b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
-    #         return
-    #
-    #
-    #     self.noeuds = 0
-    #     self.engine_move_list = []
-    #     self.variation = [("",0) for i in range(self.MAX_PLY)]
-    #
-    #     ta = time.time()
-    #     # maxval = self.minimax(val,0,b.side2move,b)
-    #     maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b)
-    #     tb = time.time()
-    #
-    #     print("eval : %s"%(maxval/100))
-    #     print("temps : %s"%(tb-ta))
-    #     print("noeuds : %s"%self.noeuds)
-    #
-    #
-    #     list = []
-    #     i = 0
-    #     while self.variation[i] != ("",0):
-    #         list.append(self.variation[i])
-    #         i+=1
-    #     print("variation principale : %s \n"%str(list))
-    #
-    #     random.shuffle(self.engine_move_list)
-    #     # print(self.engine_move_list)
-    #     for m in self.engine_move_list:
-    #         if m[3] == maxval:
-    #             # print(b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),m[3])
-    #             b.domove(m[0],m[1],m[2])
-    #             self.print_result(b)
-    #             break
+    def play_bot2(self,val,b):
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
+            self.print_result(b)
+            return
+
+        coups = self.ouverture(b)
+        if coups != []:
+            c = coups[random.randrange(0,len(coups))]
+            print("Coup d'ouverture : "+c)
+            b.domove(b.caseStr2Int(c[0:2]),b.caseStr2Int(c[2:4]),c[4:])
+            return
+
+
+        self.noeuds = 0
+        self.engine_move_list = []
+        self.variation = [("",0) for i in range(self.MAX_PLY)]
+
+        ta = time.time()
+        maxval = self.minimax(val,0,b.side2move,b)
+        # maxval = self.ab(val,0,-self.INFINITY,self.INFINITY,b)
+        tb = time.time()
+
+        print("eval : %s"%(maxval/100))
+        print("temps : %s"%(tb-ta))
+        print("noeuds : %s"%self.noeuds)
+
+
+        list = []
+        i = 0
+        while self.variation[i] != ("",0):
+            list.append(self.variation[i])
+            i+=1
+        print("variation principale : %s \n"%str(list))
+
+        random.shuffle(self.engine_move_list)
+        # print(self.engine_move_list)
+        for m in self.engine_move_list:
+            if m[3] == maxval:
+                # print(b.caseInt2Str(m[0])+b.caseInt2Str(m[1]),m[3])
+                b.domove(m[0],m[1],m[2])
+                self.print_result(b)
+                break
 
 
 
@@ -732,10 +789,13 @@ class Engine:
 
     def minimax(self,depth,pr,couleur,b):
         self.noeuds += 1
+
+        chk=b.in_check(b.side2move)
         if depth == 0 or self.endgame:
             return b.evaluer(couleur)
 
         mList = b.gen_moves_list()
+        f = False
 
         if couleur==b.side2move:
             max_eval = -self.INFINITY
@@ -794,7 +854,7 @@ class Engine:
 
         f = False
         mList = b.gen_moves_list()
-        mList = b.tri_move(mList) #ACCELERE ENORMEMENT LES CALCULS
+        #mList = b.tri_move(mList) #ACCELERE ENORMEMENT LES CALCULS
 
         if pr%2==0:
 
@@ -847,10 +907,14 @@ class Engine:
 
             return beta
 
+<<<<<<< Updated upstream
 
 
 
     def la_proba(self,b,nb1,nb2):
+=======
+    def la_proba(self,b,nb1,nb2,n):
+>>>>>>> Stashed changes
         var = []
         for i in range(nb1):
             for j in range (nb2):
@@ -861,3 +925,39 @@ class Engine:
                 b.domove(c[0],c[1],c[2])
             self.newgame(b)
         return var
+
+    def komparaison(self,c,p,b):
+        l1 = []
+        l2 = []
+        for i in range(10):
+            mList=b.gen_moves_list()
+            random.shuffle(mList)
+            coup = mList[0]
+            b.domove(coup[0],coup[1],coup[2])
+        for i in range(c):
+            t1 = time.time()
+            self.play_bot2(p,b)
+            t2 = time.time()
+            l1 += [t2-t1]
+            t3 = time.time()
+            self.play_bot(b)
+            t4 = time.time()
+            l2 += [t4-t3]
+        return (l1,l2)
+
+
+    def puzz_from_pos(self,p,b): #p est la profondeur recherchée, retourne une suite de coups sous forme d'une liste de chaine de caractères
+        print("pas encore fait")
+
+
+    def playsound(self,b):
+        if b.lastprise():
+            if b.side2move == 'blanc':
+                self.capturesound1.play()
+            else:
+                self.capturesound2.play()
+        else:
+            if b.side2move == 'blanc':
+                self.playsound1.play()
+            else:
+                self.playsound2.play()

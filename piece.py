@@ -1,8 +1,12 @@
 class Piece:
     """Pieces du jeu d'échec"""
 
+<<<<<<< Updated upstream
     VIDE = '.'
     nomPiece=(VIDE,'ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
+=======
+    nomPiece=('VIDE','ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
+>>>>>>> Stashed changes
 
     valeurPiece=(0,0,900,500,300,300,100) #valeurs des pieces dont l'id correspond
 
@@ -40,7 +44,7 @@ class Piece:
     #ROI = DAME mais 1 case
 
 
-    def __init__(self,nom=VIDE,couleur=''):
+    def __init__(self,nom='VIDE',couleur=''):
         """créé la piece avec ses caracteristiques : nom, couleur, et valeur"""
         self.nom = nom
         self.couleur = couleur
@@ -51,7 +55,7 @@ class Piece:
     def isEmpty(self):
         """Renvoi vrai si la case est vide"""
 
-        return (self.nom==self.VIDE)
+        return (self.nom=='VIDE')
 
     ####################################################################
 
