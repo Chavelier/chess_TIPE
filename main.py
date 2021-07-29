@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 tk = Tk() #Création de la fenêtre du jeu
 tk.title("Chess")
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 tk.resizable(width=False,height=False)
 tk.maxsize(2000,1000)
 
@@ -19,6 +20,13 @@ canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 txt = StringVar()
 txt.set("Eval (côté blanc) : 0.0")
 tabl = Label(tk,textvariable=txt)
+=======
+tk.geometry("900x750")
+tk.iconbitmap("logo.ico")
+
+canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
+txt = StringVar()
+>>>>>>> Stashed changes
 
 reverse_mode = False
 =======
@@ -31,6 +39,9 @@ txt = StringVar()
 reverse_mode = False
 black_mode = False
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 B = Board() #création échéquier
 E = Engine() #creation engine
@@ -216,6 +227,9 @@ def execute_cmd():
     global reverse_mode
     global black_mode
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     if cmd == "new":
         E.newgame(B)
@@ -224,6 +238,7 @@ def execute_cmd():
     elif cmd == "undo":
         E.undomove(B)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     elif cmd == "eps":
         print(E.epsilon)
         for i in range(E.epsilon):
@@ -231,6 +246,8 @@ def execute_cmd():
 
     elif cmd == "ieps":
         print(B.cases)
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     elif cmd == "go":
@@ -243,9 +260,12 @@ def execute_cmd():
             E.lecture(B,E.val_compteur)
     elif cmd == "gauche" :
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         E.compteur(-1)
         E.undomove(B)
 =======
+=======
+>>>>>>> Stashed changes
         if E.mode_lecture:
             E.compteur(-1)
             E.undomove(B)
@@ -276,7 +296,10 @@ def execute_cmd():
     elif 'read' in cmd :
         E.lire(B,cmd)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
         E.mode_lecture = True
     elif cmd == "black":
         reverse_mode = False
@@ -298,6 +321,7 @@ def execute_cmd():
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
     affiche_position()
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
     cmd_bar.delete(0,"end")
@@ -334,6 +358,12 @@ def show_proba(E):
 
 #################### GESTION DES TOUCHEs ######################
 >>>>>>> Stashed changes
+=======
+    #txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
+    cmd_bar.delete(0,"end")
+
+#################### GESTION DES TOUCHEs ######################
+>>>>>>> Stashed changes
 
 def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     execute_cmd()
@@ -343,10 +373,13 @@ def on_click(evt):
     casey = (evt.y-40)//80
     if -1<casex<8 and -1<casey<8:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")
         if reverse_mode and B.side2move == "noir":
 =======
+=======
+>>>>>>> Stashed changes
         if (reverse_mode and B.side2move == "noir") or black_mode:
 >>>>>>> Stashed changes
             coord2case = 63-(casex+8*casey)
@@ -419,10 +452,13 @@ def val2(evt): #S'active au moment où le clique gauche est relaché, si le cliq
 
 tk.bind_all('<KeyPress-Return>', button_push)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
 tk.bind_all('<KeyPress-Control_L>', bot_play)
 =======
+=======
+>>>>>>> Stashed changes
 tk.bind_all('<Button-1>',on_click)
 #tk.bind_all('<ButtonRelease-1>',animation)
 tk.bind_all('<d>',on_click2) #undo

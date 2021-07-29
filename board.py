@@ -54,6 +54,7 @@ class Board:
         self.black_can_castle_0=True
         self.black_can_castle_7=True
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         self.val_cases_roi_blanc = [
         4,3,2,0,0,2,4,4,
         4,3,2,0,0,2,4,4,
@@ -174,6 +175,8 @@ class Board:
         ]
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 
     # def move_piece(self,cmd):
@@ -198,7 +201,10 @@ class Board:
     #     del self.histo[-1]
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
 >>>>>>> Stashed changes
     ####################################################################
@@ -392,11 +398,21 @@ class Board:
                     # si on avait fait un mouvement de roque alors on bouge la TOUR
                     if(arrivee==58):
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         self.cases[56]=Piece()
                         self.cases[59]=Piece('TOUR','blanc')
 
                     elif(arrivee==62):
                         self.cases[63]=Piece()
+=======
+                        self.roqueB = True
+                        self.cases[56]=Piece('VIDE')
+                        self.cases[59]=Piece('TOUR','blanc')
+
+                    elif(arrivee==62):
+                        self.roqueB = True
+                        self.cases[63]=Piece('VIDE')
+>>>>>>> Stashed changes
 =======
                         self.roqueB = True
                         self.cases[56]=Piece('VIDE')
@@ -417,11 +433,21 @@ class Board:
 
                     if(arrivee==6):
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         self.cases[7]=Piece()
                         self.cases[5]=Piece('TOUR','noir')
 
                     elif(arrivee==2):
                         self.cases[0]=Piece()
+=======
+                        self.roqueN = True
+                        self.cases[7]=Piece('VIDE')
+                        self.cases[5]=Piece('TOUR','noir')
+
+                    elif(arrivee==2):
+                        self.roqueN = True
+                        self.cases[0]=Piece('VIDE')
+>>>>>>> Stashed changes
 =======
                         self.roqueN = True
                         self.cases[7]=Piece('VIDE')
@@ -471,7 +497,10 @@ class Board:
             self.undomove()
             return False
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         return True
@@ -1161,6 +1190,9 @@ class Board:
 
     def lastprise(self): #test si le dernier coup est une prise
         return not(self.history[-1][3].nom == 'VIDE')
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 ##########################################################################

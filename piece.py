@@ -2,8 +2,12 @@ class Piece:
     """Pieces du jeu d'échec"""
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     VIDE = '.'
     nomPiece=(VIDE,'ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
+=======
+    nomPiece=('VIDE','ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
+>>>>>>> Stashed changes
 =======
     nomPiece=('VIDE','ROI','DAME','TOUR','CAVALIER','FOU','PION') #nom des pièces enregistrées
 >>>>>>> Stashed changes

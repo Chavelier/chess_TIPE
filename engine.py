@@ -24,11 +24,14 @@ class Engine:
         # self.in_op = True #drapeau pour tester l'ouverture
         self.val_compteur = 0 #valeur du compteur pour la lecture d'une partie
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         self.historique_lire = "" #historique littéral des coups pour la lecture d'une partie
         self.listfen=[['rnbkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKBNR',1]]
 
         self.transposition = [] #table des transpositions liste de liste [id,eval,profondeur]
 =======
+=======
+>>>>>>> Stashed changes
         self.historique_lire = "" #historique littérale des coups pour la lecture d'une partie
         self.mode_lecture = False #précise qu'on lit une partie
 
@@ -40,9 +43,12 @@ class Engine:
         self.engine_move_list = [] #coups jouables par l'ordi au prochain move
         self.variation = []
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 =======
+=======
+>>>>>>> Stashed changes
         #self.time1 = time.time()
         self.startsound = pygame.mixer.Sound("soundesign\start.wav")
         self.checkmatesound = pygame.mixer.Sound("soundesign\checkmatesound.wav")
@@ -56,6 +62,9 @@ class Engine:
         self.playsound1 = pygame.mixer.Sound("soundesign\playsound1.wav")
         self.playsound2 = pygame.mixer.Sound("soundesign\playsound2.wav")
         self.cantsound = pygame.mixer.Sound("soundesign\cantsound.wav")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
     ####################################################################
@@ -194,7 +203,12 @@ class Engine:
     ####################################################################
     def play_bot(self,b):
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         if(self.endgame) or self.is_nulle_rep(b): # on ne peut pas chercher si la partie est finie
+=======
+
+        if(self.endgame): # on ne peut pas chercher si la partie est finie
+>>>>>>> Stashed changes
 =======
 
         if(self.endgame): # on ne peut pas chercher si la partie est finie
@@ -248,10 +262,16 @@ class Engine:
         b.domove(best[0],best[1],best[2])
         self.print_result(b)
         self.playsound(b)
+<<<<<<< Updated upstream
+=======
+
+        print("temps d'execution : %s s \n"%((time.time() - self.time1)))
+>>>>>>> Stashed changes
 
     ####################################################################
 
     def alphabeta(self,depth,alpha,beta,b):
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
         # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
@@ -262,6 +282,13 @@ class Engine:
         self.nodes+=1
         self.pv_length[b.ply] = b.ply
 
+=======
+        # Arrivée à la fin de la récursivité, la profondeur 0 correspond à une évaluation simple de la position
+        if(depth==0):
+            b.evaluer()
+            #TODO : return quiesce(alpha,beta) pour eviter un effet d'horizon !
+
+>>>>>>> Stashed changes
         # Pour ne pas aller trop loin
         if(b.ply >= self.MAX_PLY-1):
             return b.evaluer()
@@ -292,6 +319,10 @@ class Engine:
         # de problème, mais ne pourrait-on pas faire quelque chose de plus utile ?
         random.shuffle(mList)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+        #mList=b.tri_move(mList)
+>>>>>>> Stashed changes
 =======
         #mList=b.tri_move(mList)
 >>>>>>> Stashed changes
@@ -310,11 +341,14 @@ class Engine:
             f=True #Le coup est passé
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             # self.add_nulle(b) # pour que l'ordi prennent en compte l'idée de nulle
 
 
             score=-self.alphabeta(depth-1,-beta,-alpha,b)
 =======
+=======
+>>>>>>> Stashed changes
             depth = -1
             if depth == 0:
                 score = b.evaluer()
@@ -352,7 +386,10 @@ class Engine:
 
         #TODO : 50 moves rule
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         return alpha
@@ -457,6 +494,7 @@ class Engine:
 
     ###############################################################
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     def add_nulle(self,b):
         f = False
         for m in (self.listfen):
@@ -477,6 +515,8 @@ class Engine:
                     return True
         return False
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -908,11 +948,14 @@ class Engine:
             return beta
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 
     def la_proba(self,b,nb1,nb2):
 =======
+=======
+>>>>>>> Stashed changes
     def la_proba(self,b,nb1,nb2,n):
 >>>>>>> Stashed changes
         var = []
