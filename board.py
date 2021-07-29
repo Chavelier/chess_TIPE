@@ -56,6 +56,7 @@ class Board:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         self.val_cases_roi_blanc = [
         4,3,2,0,0,2,4,4,
         4,3,2,0,0,2,4,4,
@@ -180,6 +181,8 @@ class Board:
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 
     # def move_piece(self,cmd):
@@ -206,7 +209,10 @@ class Board:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -406,11 +412,21 @@ class Board:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         self.cases[56]=Piece()
                         self.cases[59]=Piece('TOUR','blanc')
 
                     elif(arrivee==62):
                         self.cases[63]=Piece()
+=======
+                        self.roqueB = True
+                        self.cases[56]=Piece('VIDE')
+                        self.cases[59]=Piece('TOUR','blanc')
+
+                    elif(arrivee==62):
+                        self.roqueB = True
+                        self.cases[63]=Piece('VIDE')
+>>>>>>> Stashed changes
 =======
                         self.roqueB = True
                         self.cases[56]=Piece('VIDE')
@@ -451,11 +467,21 @@ class Board:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         self.cases[7]=Piece()
                         self.cases[5]=Piece('TOUR','noir')
 
                     elif(arrivee==2):
                         self.cases[0]=Piece()
+=======
+                        self.roqueN = True
+                        self.cases[7]=Piece('VIDE')
+                        self.cases[5]=Piece('TOUR','noir')
+
+                    elif(arrivee==2):
+                        self.roqueN = True
+                        self.cases[0]=Piece('VIDE')
+>>>>>>> Stashed changes
 =======
                         self.roqueN = True
                         self.cases[7]=Piece('VIDE')
@@ -525,7 +551,10 @@ class Board:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -1221,6 +1250,9 @@ class Board:
         return not(self.history[-1][3].nom == 'VIDE')
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

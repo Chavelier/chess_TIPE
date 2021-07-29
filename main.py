@@ -14,6 +14,7 @@ tk.title("Chess")
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 tk.resizable(width=False,height=False)
 tk.maxsize(2000,1000)
 
@@ -43,12 +44,22 @@ tk.iconbitmap("logo.ico")
 canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
 txt = StringVar()
 >>>>>>> Stashed changes
+=======
+tk.geometry("900x750")
+tk.iconbitmap("logo.ico")
+
+canvas = Canvas(tk, width=720, height=720,bd=0, highlightthickness=0)
+txt = StringVar()
+>>>>>>> Stashed changes
 
 reverse_mode = False
 black_mode = False
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -240,6 +251,9 @@ def execute_cmd():
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -254,6 +268,7 @@ def execute_cmd():
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     elif cmd == "eps":
         print(E.epsilon)
         for i in range(E.epsilon):
@@ -261,6 +276,8 @@ def execute_cmd():
 
     elif cmd == "ieps":
         print(B.cases)
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -279,9 +296,12 @@ def execute_cmd():
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         E.compteur(-1)
         E.undomove(B)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -318,7 +338,10 @@ def execute_cmd():
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -344,6 +367,7 @@ def execute_cmd():
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
     affiche_position()
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -394,6 +418,12 @@ def show_proba(E):
 
 #################### GESTION DES TOUCHEs ######################
 >>>>>>> Stashed changes
+=======
+    #txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
+    cmd_bar.delete(0,"end")
+
+#################### GESTION DES TOUCHEs ######################
+>>>>>>> Stashed changes
 
 def button_push(evt=""): #se déclanche lors de l'appui sur bouton
     execute_cmd()
@@ -405,10 +435,13 @@ def on_click(evt):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         # if len(cmd_bar.get()) >= 4:
         #     cmd_bar.delete(0,"end")
         if reverse_mode and B.side2move == "noir":
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -487,10 +520,13 @@ tk.bind_all('<KeyPress-Return>', button_push)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 tk.bind_all('<1>', on_click)
 tk.bind_all('<3>',on_click2)
 tk.bind_all('<KeyPress-Control_L>', bot_play)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
