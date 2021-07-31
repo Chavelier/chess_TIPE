@@ -1174,3 +1174,11 @@ class Board:
     def COL(x):
         """Renvoi le numéro de colonne (0 à 7) de la case 'x'"""
         return (x & 7) # x & y Fait un "et au niveau du bit". Chaque bit de sortie est 1 si le bit correspondant de x ET de y est 1, sinon il est 0.
+
+    @staticmethod
+    
+    def DIST(pos1,pos2):
+        """Renvoi la distance entre les cases pos1 et pos2 de l'échéquier"""
+        x1 = pos1&7 ; y1 = pos1>>3
+        x2 = pos2&7 ; y2 = pos2>>3
+        return max(abs(x1 - x2), abs(y1 - y2)) # distance de Tchebychev
