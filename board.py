@@ -22,70 +22,8 @@ class Board:
     'a1','b1','c1','d1','e1','f1','g1','h1'
     ]
 
-    knightmap = [
-    0,4,6,6,6,6,4,0,
-    4,7,10,10,10,10,7,4,
-    6,10,12,15,15,12,10,6,
-    6,10,15,20,20,15,10,6,
-    6,10,15,20,20,15,10,6,
-    6,10,12,15,15,12,10,6,
-    4,6,10,10,10,10,6,4,
-    0,4,6,6,6,6,4,0
-    ]
-    kingmap = [
-    4,3,2,0,0,2,4,4,
-    4,3,2,0,0,2,4,4,
-    8,4,2,0,0,2,4,8,
-    8,4,2,0,0,2,4,8,
-    12,10,10,8,8,10,10,12,
-    12,10,10,10,10,10,10,12,
-    15,12,10,10,10,10,12,15,
-    16,20,12,10,10,12,20,16
-    ]
-    rookmap = [
-    10,10,10,10,10,10,10,10,
-    13,20,20,20,20,20,20,13,
-    0,6,6,6,6,6,6,0,
-    0,6,6,6,6,6,6,0,
-    0,6,6,6,6,6,6,0,
-    0,6,6,6,6,6,6,0,
-    0,6,6,6,6,6,6,0,
-    6,5,10,13,13,10,5,6
-    ]
-    pawnmap = [
-    20,20,20,20,20,20,20,20,
-    20,20,20,20,20,20,20,20,
-    4,10,12,14,14,12,10,4,
-    4,10,10,12,12,10,10,4,
-    4,10,16,20,20,16,10,4,
-    8,12,5,14,14,5,12,8,
-    10,10,12,0,0,14,12,10,
-    0,0,0,0,0,0,0,0
-    ]
-    queenmap = [
-    0,4,4,8,8,4,4,0,
-    4,10,10,10,10,10,10,4,
-    4,10,12,14,14,12,10,4,
-    4,12,16,18,18,16,12,4,
-    4,10,20,18,18,20,10,4,
-    4,14,20,14,14,20,14,4,
-    4,10,10,10,10,10,10,4,
-    0,4,4,8,8,4,4,0
-    ]
-    bishopmap = [
-    0,4,4,4,4,4,4,0,
-    4,8,8,8,8,8,8,4,
-    4,10,12,14,14,12,10,4,
-    4,12,12,14,14,12,12,4,
-    4,10,18,14,14,18,10,4,
-    4,14,14,14,14,14,14,4,
-    4,18,10,8,8,10,18,4,
-    8,2,2,2,2,2,2,8
-    ]
-
     def __init__(self):
         self.init()
-
 
     def init(self):
 
@@ -99,7 +37,6 @@ class Board:
         Piece('TOUR','blanc'), Piece('CAVALIER','blanc'), Piece('FOU','blanc'), Piece('DAME','blanc'), Piece('ROI','blanc'), Piece('FOU','blanc'), Piece('CAVALIER','blanc'), Piece('TOUR','blanc')
         ]
 
-        self.histo = [] #historique des coups
 
         self.side2move='blanc'
         self.ep=-1 # la case ou l'on peut prendre en passant
@@ -119,30 +56,10 @@ class Board:
         self.black_can_castle_0=True
         self.black_can_castle_7=True
 
+        # on attribue une valeur de hash à chaque piece sur chaque case
         self.hash = [random.getrandbits(256) for i in range(769)] #12 piece * 64 cases + 1 pour le coté qui joue
         self.pos_id = self.create_pos_id()
 
-
-    # def move_piece(self,cmd):
-    #     """controle le mvt des pieces. cmd = "e2e4" par ex"""
-    #     start = cmd[0:2]
-    #     end = cmd[2:4]
-    #     piece_en_mvt = self.cases[Board.coords.index(start)]
-    #     if piece_en_mvt != Piece():
-    #         self.histo += [(cmd,self.cases[Board.coords.index(end)].nom,self.cases[Board.coords.index(end)].couleur)] #on ajoute la ligne à l'historique
-    #         self.cases[Board.coords.index(start)] = Piece() #remplace la position de départ par du vide
-    #         self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
-    #
-    #
-    # def undo_move(self):
-    #     if self.histo == []:
-    #         return
-    #     start = self.histo[-1][0][2:4]
-    #     end = self.histo[-1][0][0:2]
-    #     piece_en_mvt = self.cases[Board.coords.index(start)]
-    #     self.cases[Board.coords.index(start)] = Piece(self.histo[-1][1],self.histo[-1][2]) #remplace la position de départ par la pièce mangée précedemment
-    #     self.cases[Board.coords.index(end)] = piece_en_mvt #remplace la position finale par la piece
-    #     del self.histo[-1]
 
     ####################################################################
 

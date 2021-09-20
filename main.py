@@ -87,8 +87,10 @@ def affiche_position(l=[]):
                 posx = B.COL(pos)
                 posy = B.ROW(pos)
             canvas.create_image(mrgx+(posx+0.5)*cell, mrgy+(posy+0.5)*cell, image=imgitem2)
-
 affiche_position()
+
+
+
 
 def execute_cmd():
     cmd= cmd_bar.get()
@@ -104,46 +106,22 @@ def execute_cmd():
         tk.quit()
     elif cmd == "undo":
         E.undomove(B)
-    elif cmd == "eps":
-        print(E.epsilon)
-        for i in range(E.epsilon):
-            d = 1
-    # elif cmd == "auto":
-    #     auto_play = not auto_play
-    #     print("coups automatiques après le joueur : %s"%auto_play)
     elif cmd == "go":
         E.play_bot(B)
-    # elif "gog" in cmd:
-    #     E.play_bot(int(cmd.split()[1]),B)
-    elif cmd == "droite" :
-        E.compteur(1)
-        E.lecture(B,E.val_compteur)
-    elif cmd == "gauche" :
-        E.compteur(-1)
-        E.undomove(B)
     elif "setboard" in cmd:
         E.setboard(B,cmd)
     elif cmd == "getboard":
         print(E.getboard(B))
     elif cmd == "nulle_rep":
         print(E.listfen)
-    elif cmd == "la_proba":
-        show_proba(E)
     elif cmd == "eval" :
         print("evaluation (pour blancs) : " + str(B.evaluer("blanc")/100))
     elif cmd == "op" :
         print(E.ouverture(B))
-    elif cmd == "histo" :
-        print(B.history)
     elif cmd == 'save_op':
         E.create_op(B)
-    elif 'save' in cmd :
-        E.save(B,cmd)
-    elif 'read' in cmd :
-        E.lire(B,cmd)
-    elif cmd == 'transpo':
-        E.use_table = not E.use_table
-        print("table de transposition : %s"%E.use_table)
+    elif 'nbmoves' in cmd:
+        print(E.nbmoves(B,int(cmd.split()[1])))
     elif cmd == "black":
         reverse_mode = False
         black_mode = not black_mode
@@ -152,51 +130,15 @@ def execute_cmd():
         black_mode = False
         reverse_mode = not reverse_mode
         print("Reverse mode : %s"%reverse_mode)
-    elif cmd == "dist_edge":
-        print("distance du roi blanc au bord : %s"%B.dist_roi_bord("blanc"))
-    elif "dist" in cmd:
-        l = cmd.split()
-        x = B.caseStr2Int(l[1])
-        y = B.caseStr2Int(l[2])
-        print("distance entre les cases {} et {} : {}".format(l[1],l[2],B.DIST(x,y)))
-    elif 'sd' in cmd:
-        E.setDepth(cmd)
-    elif 'perft' in cmd:
-        E.perft(cmd,B)
-    elif cmd == "d_rpos":
-        print("ROI blanc : "+B.caseInt2Str(B.pos_roi_b))
-        print("ROI noir : "+B.caseInt2Str(B.pos_roi_n))
     elif len(cmd) >= 4:
         E.usermove(B,cmd)
 
-
+    #après avoir entré une commande :
     affiche_position()
     #txt.set("Eval (côté blanc) : %s"%(B.evaluer("blanc")/100))
     txt.set(str(B.pos_id))
     cmd_bar.delete(0,"end")
 
-
-def show_proba(E):
-    L1 = E.la_proba(B,1000,100,7)
-    y_list1 = []
-    #L2 = E.la_proba(B,1000,30)
-    #y_list2 = []
-    L3 = E.la_proba(B,1000,50,7)
-    y_list3 = []
-    for i in range(100):
-        y_list1 += [(L1.count(i))/(1000*100)]
-    #for i in range(100):
-        #y_list2 += [(L2.count(i))/(1000*30)]
-    for i in range(100):
-        y_list3 += [(L3.count(i))/(1000*50)]
-    plt.plot(np.array(list(range(100))), np.array(y_list1),label="1000 parties, 100 coups")
-    plt.plot(np.array(list(range(100))), np.array(y_list3),label="1000 parties, 50 coups")
-    #plt.plot(np.array(list(range(100))), np.array(y_list2),label="1000 parties, 30 coups")
-    plt.title("Distribution de probabilité")
-    plt.xlabel("Nombre de coups possibles")
-    plt.ylabel("Probabilité")
-    plt.legend()
-    plt.show()
 
 
 
