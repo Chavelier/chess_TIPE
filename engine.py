@@ -381,14 +381,16 @@ class Engine:
             cpt+=1
 
     def nbmoves(self,b,depth):
+        """ Renvoi le nombre de coups possible à une profondeur donnée"""
         if depth == 0:
-            return 0
+            return 1
+        mList=b.gen_moves_list()
         cpt = 0
-        mList = b.gen_moves_list()
+        
         for m in mList:
             if(not b.domove(m[0],m[1],m[2])):
                 continue
-            cpt += 1+self.nbmoves(b,depth-1)
+            cpt += self.nbmoves(b,depth-1)
             b.undomove()
         return cpt
     ####################################################################
