@@ -121,7 +121,9 @@ def execute_cmd():
     elif cmd == 'save_op':
         E.create_op(B)
     elif 'nbmoves' in cmd:
-        print(E.nbmoves(B,int(cmd.split()[1])))
+        dpt = int(cmd.split()[1])
+        for i in range(dpt):
+            print(E.nbmoves(B,i+1))
     elif cmd == "black":
         reverse_mode = False
         black_mode = not black_mode
