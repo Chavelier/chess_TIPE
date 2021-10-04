@@ -122,8 +122,11 @@ def execute_cmd():
         E.create_op(B)
     elif 'nbmoves' in cmd:
         dpt = int(cmd.split()[1])
+        tic = time.time()
         for i in range(dpt):
             print(E.nbmoves(B,i+1))
+        tac = time.time()
+        print("temps : %s s \n"%(tac-tic))
     elif cmd == "black":
         reverse_mode = False
         black_mode = not black_mode
